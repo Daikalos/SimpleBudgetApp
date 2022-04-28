@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">Assignment-2</string>
+    <string name="app_name">Finance App</string>
+    <string name="btn_login">ENTER</string>
+    <string name="placeholder_first_name">First name</string>
+    <string name="placeholder_surname">Surname</string>
+    <string name="help_login">Enter your first name and surname to begin using the app</string>
+    <string name="home">Home</string>
+    <string name="income">Income</string>
+    <string name="expenditure">Expenditure</string>
+    <string name="placeholder_name">FirstName Surname</string>
 </resources>

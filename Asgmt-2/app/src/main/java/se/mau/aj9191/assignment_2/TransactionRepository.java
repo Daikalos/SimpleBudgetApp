@@ -9,7 +9,9 @@ import java.util.List;
 public class TransactionRepository
 {
     private TransactionDao transactionDao;
+
     private LiveData<List<Transaction>> transactions;
+    private LiveData<List<Transaction>> findByType;
 
     public TransactionRepository(Application application)
     {
@@ -26,5 +28,9 @@ public class TransactionRepository
     public void insert(Transaction transaction)
     {
         TransactionDatabase.executorService.execute(() -> transactionDao.insert(transaction));
+    }
+    public void deleteByID(String id)
+    {
+        TransactionDatabase.executorService.execute(() -> transactionDao.deleteByID(id));
     }
 }

@@ -14,8 +14,11 @@ public interface TransactionDao
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     public void insert(Transaction transaction);
 
-    @Query("DELETE FROM TRANSACTION_TABLE")
+    @Query("DELETE FROM transaction_table")
     public void deleteAll();
+
+    @Query("DELETE FROM transaction_table WHERE id = :id")
+    public void deleteByID(String id);
 
     @Query("SELECT * FROM transaction_table WHERE type = :type")
     LiveData<List<Transaction>> findByType(String type);

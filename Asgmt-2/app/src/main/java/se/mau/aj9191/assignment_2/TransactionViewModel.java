@@ -16,6 +16,7 @@ public class TransactionViewModel extends AndroidViewModel
     public TransactionViewModel(Application application)
     {
         super(application);
+
         repository = new TransactionRepository(application);
         transactions = repository.getAllTransactions();
     }
@@ -29,4 +30,5 @@ public class TransactionViewModel extends AndroidViewModel
     {
         repository.insert(transaction);
     }
+    public void deleteByID(String id) { repository.deleteByID(id); }
 }
