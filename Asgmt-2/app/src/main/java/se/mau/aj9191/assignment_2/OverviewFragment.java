@@ -47,7 +47,7 @@ public class OverviewFragment extends Fragment implements Toolbar.OnMenuItemClic
     {
         toolbar = view.findViewById(R.id.toolbar);
 
-        toolbar.setTitle("Welcome " + prefsViewModel.getFirstName() + " " + prefsViewModel.getSurname());
+        toolbar.setTitle(prefsViewModel.getFirstName() + " " + prefsViewModel.getSurname());
     }
     private void registerListeners()
     {

@@ -3,8 +3,5 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/btnChangeName"
-        android:title="@string/change_name"
-        android:icon="@drawable/ic_more"
-        app:showAsAction="withText"
-        />
+        android:title="@string/change_name" />
 </menu>

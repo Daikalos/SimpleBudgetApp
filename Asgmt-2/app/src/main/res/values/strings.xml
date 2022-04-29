@@ -3,7 +3,7 @@
     <string name="btn_login">ENTER</string>
     <string name="placeholder_first_name">First name</string>
     <string name="placeholder_surname">Surname</string>
-    <string name="help_login">Enter your first name and surname to begin using the app</string>
+    <string name="help_login">Enter your first and last name to begin using the app</string>
     <string name="home">Overview</string>
     <string name="income">Income</string>
     <string name="expenditure">Expenditure</string>
