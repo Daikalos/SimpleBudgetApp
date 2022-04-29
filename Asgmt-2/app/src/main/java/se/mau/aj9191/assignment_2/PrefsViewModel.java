@@ -20,6 +20,11 @@ public class PrefsViewModel extends AndroidViewModel
         sharedPreferences = application.getSharedPreferences(Prefs, Context.MODE_PRIVATE);
     }
 
+    public boolean userExists()
+    {
+        return !getFirstName().isEmpty() && !getSurname().isEmpty();
+    }
+
     public String getFirstName()
     {
         return sharedPreferences.getString(FirstName, "");

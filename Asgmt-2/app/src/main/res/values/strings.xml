@@ -4,8 +4,11 @@
     <string name="placeholder_first_name">First name</string>
     <string name="placeholder_surname">Surname</string>
     <string name="help_login">Enter your first name and surname to begin using the app</string>
-    <string name="home">Home</string>
+    <string name="home">Overview</string>
     <string name="income">Income</string>
     <string name="expenditure">Expenditure</string>
     <string name="placeholder_name">FirstName Surname</string>
+    <string name="change_name">Change current name</string>
+    <string name="transaction">Transaction</string>
+    <string name="set_period">Set period</string>
 </resources>

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/Home"
+        android:id="@+id/btnHome"
         android:enabled="true"
         android:icon="@drawable/ic_home"
         android:title="@string/home"/>
     <item
-        android:id="@+id/Income"
+        android:id="@+id/btnIncome"
         android:enabled="true"
         android:icon="@drawable/ic_money"
         android:title="@string/income"/>
     <item
-        android:id="@+id/Expenditure"
+        android:id="@+id/btnExpenditure"
         android:enabled="true"
         android:icon="@drawable/ic_payments"
         android:title="@string/expenditure"/>
