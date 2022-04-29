@@ -8,21 +8,25 @@ import android.view.ViewGroup;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.List;
+
 public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemClickListener
 {
-    private Toolbar toolbar;
-    private FloatingActionButton actionButton;
-    private RecyclerView rvTransactions;
-
+    private TransactionViewModel transactionViewModel;
     private String transactionType;
 
-    private TransactionViewModel transactionViewModel;
+    private Toolbar toolbar;
+    private FloatingActionButton btnAction;
+    private RecyclerView rvTransactions;
+    private ListAdapter laTransactions;
 
     public TransactionFragment(String transactionType)
     {
@@ -66,11 +70,11 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
     private void initializeComponents(View view)
     {
         toolbar = view.findViewById(R.id.toolbar);
-        actionButton = view.findViewById(R.id.fabAction);
+        btnAction = view.findViewById(R.id.fabAction);
         rvTransactions = view.findViewById(R.id.rvTransactions);
 
         rvTransactions.setLayoutManager(new LinearLayoutManager(requireContext()));
-        rvTransactions.setAdapter(new TransactionAdapter(new TransactionAdapter.TransactionDiff()));
+        rvTransactions.setAdapter(laTransactions = new TransactionAdapter(requireContext(), new TransactionAdapter.TransactionDiff()));
 
         toolbar.setTitle(transactionType);
         toolbar.setNavigationIcon(TransactionType.getIconFromType(requireContext(), transactionType));
@@ -78,14 +82,15 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
     private void registerListeners()
     {
         toolbar.setOnMenuItemClickListener(this);
-        actionButton.setOnClickListener(view ->
+        btnAction.setOnClickListener(view ->
         {
 
         });
     }
     private void addObservers()
     {
-
+        transactionViewModel.getByType(transactionType).observe(getViewLifecycleOwner(), transactions ->
+                laTransactions.submitList(transactions));
     }
 
     @Override

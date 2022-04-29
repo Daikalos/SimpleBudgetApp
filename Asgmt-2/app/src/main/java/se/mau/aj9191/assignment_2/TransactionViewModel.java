@@ -11,24 +11,28 @@ public class TransactionViewModel extends AndroidViewModel
 {
     private TransactionRepository repository;
 
-    private final LiveData<List<Transaction>> transactions;
-
     public TransactionViewModel(Application application)
     {
         super(application);
-
         repository = new TransactionRepository(application);
-        transactions = repository.getAllTransactions();
-    }
-
-    LiveData<List<Transaction>> getTransactions()
-    {
-        return transactions;
     }
 
     public void insert(Transaction transaction)
     {
         repository.insert(transaction);
     }
-    public void deleteByID(String id) { repository.deleteByID(id); }
+    public void delete(String id) { repository.delete(id); }
+
+    public LiveData<List<Transaction>> getAll()
+    {
+        return repository.getAll();
+    }
+    public LiveData<List<Transaction>> getByType(String type)
+    {
+        return repository.getByType(type);
+    }
+    public LiveData<List<Transaction>> getBetweenDates(String type, String from, String to)
+    {
+        return repository.getBetweenDates(type, from, to);
+    }
 }

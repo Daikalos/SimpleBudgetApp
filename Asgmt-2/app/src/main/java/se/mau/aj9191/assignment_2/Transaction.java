@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Entity(tableName = "transaction_table")
@@ -28,7 +30,8 @@ public class Transaction
 
     @NonNull
     @ColumnInfo(name = "date")
-    private final String date;
+    @TypeConverters({DateConverter.class})
+    private final Date date;
 
     @ColumnInfo(name = "amount")
     private final int amount;
@@ -36,8 +39,8 @@ public class Transaction
     public Transaction(@NonNull String type,
                        @NonNull String category,
                        @NonNull String title,
-                       @NonNull String date,
-                       @NonNull int amount)
+                       @NonNull Date date,
+                       int amount)
     {
         this.type = type;
         this.category = category;
@@ -67,7 +70,7 @@ public class Transaction
     {
         return title;
     }
-    public String getDate()
+    public Date getDate()
     {
         return date;
     }
@@ -79,10 +82,10 @@ public class Transaction
     @Override
     public boolean equals(Object other)
     {
-        Transaction transaction = (Transaction)other;
-
-        if (transaction == null)
+        if (other.getClass() != Transaction.class)
             return false;
+
+        Transaction transaction = (Transaction)other;
 
         return type.equals(transaction.getType()) &&
                 category.equals(transaction.getCategory()) &&

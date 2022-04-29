@@ -11,4 +11,10 @@
     <string name="change_name">Change current name</string>
     <string name="transaction">Transaction</string>
     <string name="set_period">Set period</string>
+    <string name="placeholder_title">Title</string>
+    <string name="placeholder_date">yyyy-mm-dd</string>
+    <string name="placeholder_category">Category</string>
+    <string name="placeholder_amount">$0</string>
+    <string name="desc_remove">Removes the transaction</string>
+    <string name="desc_category">Current transaction category</string>
 </resources>
