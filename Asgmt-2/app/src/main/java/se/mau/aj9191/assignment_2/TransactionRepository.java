@@ -21,7 +21,7 @@ public class TransactionRepository
     {
         TransactionDatabase.executorService.execute(() -> transactionDao.insert(transaction));
     }
-    public void delete(String id)
+    public void delete(int id)
     {
         TransactionDatabase.executorService.execute(() -> transactionDao.delete(id));
     }

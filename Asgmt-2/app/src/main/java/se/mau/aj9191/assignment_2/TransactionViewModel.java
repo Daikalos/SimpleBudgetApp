@@ -21,7 +21,7 @@ public class TransactionViewModel extends AndroidViewModel
     {
         repository.insert(transaction);
     }
-    public void delete(String id) { repository.delete(id); }
+    public void delete(int id) { repository.delete(id); }
 
     public LiveData<List<Transaction>> getAll()
     {

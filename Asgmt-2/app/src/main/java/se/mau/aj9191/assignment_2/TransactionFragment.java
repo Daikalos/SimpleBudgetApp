@@ -10,6 +10,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,6 +29,10 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
     private RecyclerView rvTransactions;
     private ListAdapter laTransactions;
 
+    public TransactionFragment()
+    {
+
+    }
     public TransactionFragment(String transactionType)
     {
         this.transactionType = transactionType;
@@ -53,8 +58,8 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
     @Override
     public void onSaveInstanceState(Bundle savedInstance)
     {
+        savedInstance.putString("TransactionType", transactionType);
         super.onSaveInstanceState(savedInstance);
-        savedInstance.putString(transactionType, "TransactionType");
     }
 
     @Override
@@ -73,8 +78,13 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
         btnAction = view.findViewById(R.id.fabAction);
         rvTransactions = view.findViewById(R.id.rvTransactions);
 
-        rvTransactions.setLayoutManager(new LinearLayoutManager(requireContext()));
-        rvTransactions.setAdapter(laTransactions = new TransactionAdapter(requireContext(), new TransactionAdapter.TransactionDiff()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
+
+        rvTransactions.setLayoutManager(linearLayoutManager);
+        rvTransactions.addItemDecoration(new DividerItemDecoration(requireContext(), linearLayoutManager.getOrientation()));
+        rvTransactions.setAdapter(laTransactions = new TransactionAdapter(new TransactionAdapter.TransactionDiff(), requireContext(), transactionViewModel));
 
         toolbar.setTitle(transactionType);
         toolbar.setNavigationIcon(TransactionType.getIconFromType(requireContext(), transactionType));
@@ -84,7 +94,8 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
         toolbar.setOnMenuItemClickListener(this);
         btnAction.setOnClickListener(view ->
         {
-
+            transactionViewModel.insert(new Transaction(TransactionType.Expenditure, TransactionCategories.Food, "Hamburger", DateConverter.fromTimestamp("2020-01-12"), 100));
+            rvTransactions.smoothScrollToPosition(rvTransactions.getTop());
         });
     }
     private void addObservers()

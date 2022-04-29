@@ -18,7 +18,7 @@ public interface TransactionDao
     void deleteAll();
 
     @Query("DELETE FROM transaction_table WHERE id = :id")
-    void delete(String id);
+    void delete(int id);
 
     @Query("SELECT * FROM transaction_table")
     LiveData<List<Transaction>> getAll();
