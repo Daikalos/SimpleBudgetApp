@@ -12,6 +12,7 @@
     <string name="transaction">Transaction</string>
     <string name="set_period">Set period</string>
     <string name="reset_period">Reset period</string>
+    <string name="scan_barcode">Scan barcode</string>
     <string name="placeholder_title">Title</string>
     <string name="placeholder_date">yyyy-mm-dd</string>
     <string name="placeholder_category">Category</string>
@@ -21,4 +22,5 @@
     <string name="since">Since:</string>
     <string name="until">Until:</string>
     <string name="pick_dates">Select Period</string>
+    <string name="title_add_transaction">Add Transaction</string>
 </resources>

@@ -23,9 +23,9 @@ public interface TransactionDao
     @Query("SELECT * FROM transaction_table")
     LiveData<List<Transaction>> getAll();
 
-    @Query("SELECT * FROM transaction_table WHERE type = :type ORDER BY date ASC")
+    @Query("SELECT * FROM transaction_table WHERE type = :type ORDER BY date DESC")
     LiveData<List<Transaction>> getByType(String type);
 
-    @Query("SELECT * FROM transaction_table WHERE type = :type AND date BETWEEN :since AND :until ORDER BY date ASC")
+    @Query("SELECT * FROM transaction_table WHERE type = :type AND date BETWEEN :since AND :until ORDER BY date DESC")
     List<Transaction> getBetweenDates(String type, String since, String until);
 }

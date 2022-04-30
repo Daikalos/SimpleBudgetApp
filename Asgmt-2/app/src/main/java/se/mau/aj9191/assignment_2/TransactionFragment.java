@@ -2,8 +2,6 @@ package se.mau.aj9191.assignment_2;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,19 +10,14 @@ import android.widget.DatePicker;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 
 public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemClickListener
@@ -105,12 +98,7 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
         btnAction = view.findViewById(R.id.fabAction);
         rvTransactions = view.findViewById(R.id.rvTransactions);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
-        linearLayoutManager.setReverseLayout(true);
-        linearLayoutManager.setStackFromEnd(true);
-
-        rvTransactions.setLayoutManager(linearLayoutManager);
-        rvTransactions.addItemDecoration(new DividerItemDecoration(requireContext(), linearLayoutManager.getOrientation()));
+        rvTransactions.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvTransactions.setAdapter(laTransactions = new TransactionAdapter(new TransactionAdapter.TransactionDiff(), requireContext(), transactionViewModel));
 
         toolbar.setTitle(transactionType);
@@ -121,8 +109,7 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
         toolbar.setOnMenuItemClickListener(this);
         btnAction.setOnClickListener(view ->
         {
-            transactionViewModel.insert(new Transaction(TransactionType.Expenditure, TransactionCategories.Food, "Hamburger",
-                    DateConverter.fromTimestamp(DateConverter.convert(1990 + random.nextInt(30), random.nextInt(12), random.nextInt(25))), 100));
+            TransactionAddDialog.display(getChildFragmentManager());
             rvTransactions.smoothScrollToPosition(rvTransactions.getTop());
         });
     }
@@ -143,8 +130,10 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
                 setPeriod();
                 break;
             case R.id.btnUndo:
-                TransactionDatabase.executorService.execute(() ->
-                        laTransactions.submitList(transactionViewModel.getByType(transactionType).getValue()));
+                laTransactions.submitList(transactionViewModel.getByType(transactionType).getValue());
+                break;
+            case R.id.btnBarcode:
+
                 break;
         }
         return true;
@@ -152,7 +141,7 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
 
     private void setPeriod()
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.CustomDialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.DateDialog);
 
         View datePickerView = LayoutInflater.from(requireContext()).inflate(R.layout.date_picker, null);
         builder.setView(datePickerView);

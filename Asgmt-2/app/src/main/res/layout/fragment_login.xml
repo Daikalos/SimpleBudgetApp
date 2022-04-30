@@ -48,7 +48,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="4dp"
-            android:hint="@string/placeholder_first_name">
+            android:hint="@string/placeholder_first_name"
+            app:boxStrokeColor="@color/light_blue"
+            app:hintTextColor="@color/light_blue">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etFirstName"
@@ -65,7 +67,9 @@
             android:layout_width="350dp"
             android:layout_height="match_parent"
             android:layout_margin="4dp"
-            android:hint="@string/placeholder_surname">
+            android:hint="@string/placeholder_surname"
+            app:boxStrokeColor="@color/light_blue"
+            app:hintTextColor="@color/light_blue">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etSurname"
