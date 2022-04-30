@@ -9,6 +9,7 @@ public class TransactionType
 {
     public static final String Expenditure = "Expenditure";
     public static final String Income = "Income";
+    public static final String All = "All";
 
     public static Drawable getIconFromType(Context context, String type)
     {

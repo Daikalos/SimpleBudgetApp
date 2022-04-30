@@ -7,4 +7,10 @@
         android:title="@string/set_period"
         android:icon="@drawable/ic_date"
         app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/btnUndo"
+        android:title="@string/reset_period"
+        android:icon="@drawable/ic_undo"
+        app:showAsAction="ifRoom"
+        />
 </menu>

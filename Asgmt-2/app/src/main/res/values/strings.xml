@@ -4,20 +4,21 @@
     <string name="placeholder_first_name">First name</string>
     <string name="placeholder_surname">Surname</string>
     <string name="help_login">Enter your first and last name to begin using the app</string>
-    <string name="home">Overview</string>
+    <string name="home">Home</string>
     <string name="income">Income</string>
     <string name="expenditure">Expenditure</string>
     <string name="placeholder_name">FirstName Surname</string>
     <string name="change_name">Change current name</string>
     <string name="transaction">Transaction</string>
     <string name="set_period">Set period</string>
+    <string name="reset_period">Reset period</string>
     <string name="placeholder_title">Title</string>
     <string name="placeholder_date">yyyy-mm-dd</string>
     <string name="placeholder_category">Category</string>
     <string name="placeholder_amount">$0</string>
     <string name="desc_remove">Removes the transaction</string>
     <string name="desc_category">Current transaction category</string>
-    <string name="from">From:</string>
+    <string name="since">Since:</string>
     <string name="until">Until:</string>
-    <string name="pick_dates">Pick date period</string>
+    <string name="pick_dates">Select Period</string>
 </resources>

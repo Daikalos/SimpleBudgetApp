@@ -1,15 +1,19 @@
 package se.mau.aj9191.assignment_2;
 
 import android.app.Application;
+import android.util.Pair;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 
 public class TransactionViewModel extends AndroidViewModel
 {
     private TransactionRepository repository;
+
+    private SingleLiveEvent<List<Transaction>> transactionsPeriod = new SingleLiveEvent<>();
 
     public TransactionViewModel(Application application)
     {
@@ -31,8 +35,13 @@ public class TransactionViewModel extends AndroidViewModel
     {
         return repository.getByType(type);
     }
-    public LiveData<List<Transaction>> getBetweenDates(String type, String from, String to)
+
+    public void getBetweenDates(String type, String since, String until)
     {
-        return repository.getBetweenDates(type, from, to);
+        repository.getBetweenDates(type, since, until);
+    }
+    public LiveData<List<Transaction>> getTransactionsPeriod()
+    {
+        return repository.getTransactionsPeriod();
     }
 }

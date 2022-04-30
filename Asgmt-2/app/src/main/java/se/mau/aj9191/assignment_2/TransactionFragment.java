@@ -1,10 +1,14 @@
 package se.mau.aj9191.assignment_2;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -17,19 +21,27 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemClickListener
 {
     private static final String Type = "TransactionType";
+    private static final String SinceDate = "SinceDate";
+    private static final String UntilDate = "UntilDate";
 
     private TransactionViewModel transactionViewModel;
-    private String transactionType;
+    private String transactionType = "", sinceDate = "", untilDate = "";
 
     private Toolbar toolbar;
     private FloatingActionButton btnAction;
     private RecyclerView rvTransactions;
     private ListAdapter laTransactions;
+
+    Random random = new Random();
 
     public TransactionFragment()
     {
@@ -45,10 +57,14 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
     {
         super.onCreate(savedInstance);
 
-        if (savedInstance != null)
-            transactionType = savedInstance.getString(Type);
-
         transactionViewModel = new ViewModelProvider(requireActivity()).get(TransactionViewModel.class);
+
+        if (savedInstance != null)
+        {
+            transactionType = savedInstance.getString(Type);
+            sinceDate = savedInstance.getString(SinceDate);
+            untilDate = savedInstance.getString(UntilDate);
+        }
     }
 
     @Override
@@ -61,6 +77,9 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
     public void onSaveInstanceState(Bundle savedInstance)
     {
         savedInstance.putString(Type, transactionType);
+        savedInstance.putString(SinceDate, sinceDate);
+        savedInstance.putString(UntilDate, untilDate);
+
         super.onSaveInstanceState(savedInstance);
     }
 
@@ -72,6 +91,12 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
         initializeComponents(view);
         registerListeners();
         addObservers();
+
+        if (savedInstance != null)
+        {
+            if (!sinceDate.isEmpty() && !untilDate.isEmpty())
+                transactionViewModel.getBetweenDates(transactionType, sinceDate, untilDate);
+        }
     }
 
     private void initializeComponents(View view)
@@ -96,14 +121,17 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
         toolbar.setOnMenuItemClickListener(this);
         btnAction.setOnClickListener(view ->
         {
-            transactionViewModel.insert(new Transaction(TransactionType.Expenditure, TransactionCategories.Food, "Hamburger", DateConverter.fromTimestamp("2020-01-12"), 100));
+            transactionViewModel.insert(new Transaction(TransactionType.Expenditure, TransactionCategories.Food, "Hamburger",
+                    DateConverter.fromTimestamp(DateConverter.convert(1990 + random.nextInt(30), random.nextInt(12), random.nextInt(25))), 100));
             rvTransactions.smoothScrollToPosition(rvTransactions.getTop());
         });
     }
     private void addObservers()
     {
-        transactionViewModel.getByType(transactionType).observe(getViewLifecycleOwner(), transactions ->
-                laTransactions.submitList(transactions));
+        transactionViewModel.getByType(transactionType).observe(getViewLifecycleOwner(),
+                transactions -> laTransactions.submitList(transactions));
+        transactionViewModel.getTransactionsPeriod().observe(getViewLifecycleOwner(),
+                transactions -> laTransactions.submitList(transactions));
     }
 
     @Override
@@ -112,9 +140,48 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
         switch (item.getItemId())
         {
             case R.id.btnTimePeriod:
-                TransactionHelper.betweenDates(requireContext(), transactionViewModel);
+                setPeriod();
+                break;
+            case R.id.btnUndo:
+                TransactionDatabase.executorService.execute(() ->
+                        laTransactions.submitList(transactionViewModel.getByType(transactionType).getValue()));
                 break;
         }
         return true;
+    }
+
+    private void setPeriod()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.CustomDialog);
+
+        View datePickerView = LayoutInflater.from(requireContext()).inflate(R.layout.date_picker, null);
+        builder.setView(datePickerView);
+
+        DatePicker datePickerSince = datePickerView.findViewById(R.id.dpSince);
+        DatePicker datePickerUntil = datePickerView.findViewById(R.id.dpUntil);
+
+        long time = new Date().getTime();
+
+        datePickerSince.setMaxDate(time);
+        datePickerUntil.setMaxDate(time);
+
+        builder.setNegativeButton("Cancel",null);
+        builder.setPositiveButton("OK", (dialogInterface, i) ->
+        {
+            int sinceDay = datePickerSince.getDayOfMonth();
+            int sinceMonth = datePickerSince.getMonth();
+            int sinceYear = datePickerSince.getYear();
+
+            int untilDay = datePickerUntil.getDayOfMonth();
+            int untilMonth = datePickerUntil.getMonth();
+            int untilYear = datePickerUntil.getYear();
+
+            transactionViewModel.getBetweenDates(transactionType,
+                    sinceDate = DateConverter.convert(sinceYear, sinceMonth, sinceDay),
+                    untilDate = DateConverter.convert(untilYear, untilMonth, untilDay));
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

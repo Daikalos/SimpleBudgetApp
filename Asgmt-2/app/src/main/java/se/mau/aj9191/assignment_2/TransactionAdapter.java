@@ -90,7 +90,7 @@ public class TransactionAdapter extends ListAdapter<Transaction, TransactionAdap
 
             ivCategory.setImageDrawable(TransactionCategories.getIconFromType(context, transaction.getCategory()));
             tvCategory.setText(transaction.getCategory());
-            tvDate.setText(DateConverter.toTimestamp(transaction.getDate()));
+            tvDate.setText(DateConverter.format(transaction.getDate()));
             tvTitle.setText(transaction.getTitle());
             tvAmount.setText("$" + transaction.getAmount());
 
