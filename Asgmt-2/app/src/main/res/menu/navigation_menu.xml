@@ -4,15 +4,15 @@
         android:id="@+id/btnHome"
         android:enabled="true"
         android:icon="@drawable/ic_home"
-        android:title="@string/home"/>
+        android:title="@string/title_home"/>
     <item
         android:id="@+id/btnIncome"
         android:enabled="true"
         android:icon="@drawable/ic_money"
-        android:title="@string/income"/>
+        android:title="@string/title_income"/>
     <item
         android:id="@+id/btnExpenditure"
         android:enabled="true"
         android:icon="@drawable/ic_payments"
-        android:title="@string/expenditure"/>
+        android:title="@string/title_expenditure"/>
 </menu>

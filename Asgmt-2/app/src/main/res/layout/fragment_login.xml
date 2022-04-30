@@ -35,12 +35,12 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvHelp"
+            android:id="@+id/tvHelpLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="8dp"
-            android:text="@string/help_login"
+            android:text="@string/txt_help_login"
             android:textAlignment="center" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -48,9 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="4dp"
-            android:hint="@string/placeholder_first_name"
-            app:boxStrokeColor="@color/light_blue"
-            app:hintTextColor="@color/light_blue">
+            android:hint="@string/txt_first_name">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etFirstName"
@@ -67,7 +65,7 @@
             android:layout_width="350dp"
             android:layout_height="match_parent"
             android:layout_margin="4dp"
-            android:hint="@string/placeholder_surname"
+            android:hint="@string/txt_surname"
             app:boxStrokeColor="@color/light_blue"
             app:hintTextColor="@color/light_blue">
 

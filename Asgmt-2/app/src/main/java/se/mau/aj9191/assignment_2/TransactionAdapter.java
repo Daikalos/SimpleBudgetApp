@@ -1,6 +1,8 @@
 package se.mau.aj9191.assignment_2;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -108,7 +110,20 @@ public class TransactionAdapter extends ListAdapter<Transaction, TransactionAdap
         @Override
         public void onClick(View view)
         {
-            transactionViewModel.delete(transaction.getId());
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+            builder.setTitle(R.string.txt_confirm);
+            builder.setMessage(R.string.txt_sure);
+
+            builder.setPositiveButton(R.string.txt_yes, (dialogInterface, i) ->
+            {
+                transactionViewModel.delete(transaction.getId());
+                dialogInterface.dismiss();
+            });
+            builder.setNegativeButton(R.string.txt_no, (dialogInterface, i) -> dialogInterface.dismiss());
+
+            AlertDialog alert = builder.create();
+            alert.show();
         }
     }
 }

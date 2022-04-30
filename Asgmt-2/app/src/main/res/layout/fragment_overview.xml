@@ -17,7 +17,7 @@
             android:background="@color/blue"
             app:menu="@menu/overview_toolbar_menu"
             app:navigationIcon="@drawable/ic_home"
-            app:title="@string/home" />
+            app:title="@string/title_home" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

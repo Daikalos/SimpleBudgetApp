@@ -1,6 +1,7 @@
 package se.mau.aj9191.assignment_2;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -109,7 +110,7 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
         toolbar.setOnMenuItemClickListener(this);
         btnAction.setOnClickListener(view ->
         {
-            TransactionAddDialog.display(getChildFragmentManager());
+            TransactionAddDialog.display(transactionType, getChildFragmentManager());
             rvTransactions.smoothScrollToPosition(rvTransactions.getTop());
         });
     }
@@ -130,7 +131,7 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
                 setPeriod();
                 break;
             case R.id.btnUndo:
-                laTransactions.submitList(transactionViewModel.getByType(transactionType).getValue());
+                undo();
                 break;
             case R.id.btnBarcode:
 
@@ -154,7 +155,7 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
         datePickerSince.setMaxDate(time);
         datePickerUntil.setMaxDate(time);
 
-        builder.setNegativeButton("Cancel",null);
+        builder.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss());
         builder.setPositiveButton("OK", (dialogInterface, i) ->
         {
             int sinceDay = datePickerSince.getDayOfMonth();
@@ -168,9 +169,17 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
             transactionViewModel.getBetweenDates(transactionType,
                     sinceDate = DateConverter.convert(sinceYear, sinceMonth, sinceDay),
                     untilDate = DateConverter.convert(untilYear, untilMonth, untilDay));
+
+            dialogInterface.dismiss();
         });
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private void undo()
+    {
+        sinceDate = untilDate = "";
+        laTransactions.submitList(transactionViewModel.getByType(transactionType).getValue());
     }
 }

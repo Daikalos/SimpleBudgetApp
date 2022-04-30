@@ -17,7 +17,7 @@
             android:layout_height="?actionBarSize"
             android:background="@color/blue"
             app:menu="@menu/transaction_toolbar_menu"
-            app:title="@string/transaction" />
+            app:title="@string/txt_transaction" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

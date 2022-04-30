@@ -11,6 +11,8 @@ public class TransactionType
     public static final String Income = "Income";
     public static final String All = "All";
 
+    public static final String[] Type = { Expenditure, Income };
+
     public static Drawable getIconFromType(Context context, String type)
     {
         switch (type)

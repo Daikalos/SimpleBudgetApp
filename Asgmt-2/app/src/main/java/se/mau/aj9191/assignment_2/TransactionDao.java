@@ -14,9 +14,6 @@ public interface TransactionDao
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Transaction transaction);
 
-    @Query("DELETE FROM transaction_table")
-    void deleteAll();
-
     @Query("DELETE FROM transaction_table WHERE id = :id")
     void delete(int id);
 
