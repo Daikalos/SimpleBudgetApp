@@ -17,4 +17,7 @@
     <string name="placeholder_amount">$0</string>
     <string name="desc_remove">Removes the transaction</string>
     <string name="desc_category">Current transaction category</string>
+    <string name="from">From:</string>
+    <string name="until">Until:</string>
+    <string name="pick_dates">Pick date period</string>
 </resources>

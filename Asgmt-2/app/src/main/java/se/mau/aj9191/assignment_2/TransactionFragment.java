@@ -21,6 +21,8 @@ import java.util.List;
 
 public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemClickListener
 {
+    private static final String Type = "TransactionType";
+
     private TransactionViewModel transactionViewModel;
     private String transactionType;
 
@@ -44,7 +46,7 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
         super.onCreate(savedInstance);
 
         if (savedInstance != null)
-            transactionType = savedInstance.getString("TransactionType");
+            transactionType = savedInstance.getString(Type);
 
         transactionViewModel = new ViewModelProvider(requireActivity()).get(TransactionViewModel.class);
     }
@@ -58,7 +60,7 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
     @Override
     public void onSaveInstanceState(Bundle savedInstance)
     {
-        savedInstance.putString("TransactionType", transactionType);
+        savedInstance.putString(Type, transactionType);
         super.onSaveInstanceState(savedInstance);
     }
 
@@ -110,7 +112,7 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
         switch (item.getItemId())
         {
             case R.id.btnTimePeriod:
-
+                TransactionHelper.betweenDates(requireContext(), transactionViewModel);
                 break;
         }
         return true;

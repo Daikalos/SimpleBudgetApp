@@ -14,6 +14,9 @@ public class TransactionCategories
     public static final String Salary = "Salary";
     public static final String Other = "Other";
 
+    public static String[] Expenditure = { Food, Leisure, Travel, Accommodation, Other };
+    public static String[] Income = { Salary, Other };
+
     public static Drawable getIconFromType(Context context, String type)
     {
         switch (type)
@@ -30,6 +33,18 @@ public class TransactionCategories
                 return ContextCompat.getDrawable(context, R.drawable.ic_salary);
             case Other:
                 return ContextCompat.getDrawable(context, R.drawable.ic_other);
+        }
+        return null;
+    }
+
+    public static String[] getCategories(String type)
+    {
+        switch (type)
+        {
+            case TransactionType.Expenditure:
+                return Expenditure;
+            case TransactionType.Income:
+                return Income;
         }
         return null;
     }
