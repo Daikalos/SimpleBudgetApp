@@ -18,6 +18,8 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.util.Date;
+
 public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMenuItemClickListener
 {
     public static final String Tag = "transaction_add_dialog";
@@ -72,7 +74,7 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
     {
         final Dialog dialog = super.onCreateDialog(savedInstance);
 
-        dialog.getWindow().setWindowAnimations(R.style.WindowSlide);
+        dialog.getWindow().getAttributes().windowAnimations = R.style.WindowSlide;
 
         return dialog;
     }
@@ -118,6 +120,7 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
         toolbar.setTitle("Add " + transactionType);
         spnrCategory.setAdapter(new ArrayAdapter<>(requireContext(),
                 R.layout.custom_spinner_item, TransactionCategories.getCategories(transactionType)));
+        datePicker.setMaxDate(new Date().getTime());
     }
     private void registerListeners()
     {
@@ -159,12 +162,12 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
 
             if (title.isEmpty())
             {
-                ShowToast.show(requireContext(), "title is empty");
+                ShowToast.show(requireContext(), getResources().getString(R.string.error_empty_title));
                 return false;
             }
             if (amount.isEmpty())
             {
-                ShowToast.show(requireContext(), "amount is empty");
+                ShowToast.show(requireContext(), getResources().getString(R.string.error_empty_amount));
                 return false;
             }
 

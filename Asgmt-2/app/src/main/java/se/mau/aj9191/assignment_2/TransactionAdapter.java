@@ -112,7 +112,7 @@ public class TransactionAdapter extends ListAdapter<Transaction, TransactionAdap
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-            builder.setTitle(R.string.txt_confirm);
+            builder.setTitle(R.string.txt_delete);
             builder.setMessage(R.string.txt_sure);
 
             builder.setPositiveButton(R.string.txt_yes, (dialogInterface, i) ->

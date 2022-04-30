@@ -25,8 +25,10 @@
     <string name="desc_category">Current transaction category</string>
     <string name="txt_enter_title">enter title</string>
     <string name="txt_enter_amount">enter amount in dollars</string>
-    <string name="txt_confirm">Confirm</string>
+    <string name="txt_delete">Delete</string>
     <string name="txt_sure">Are you sure?</string>
     <string name="txt_yes">YES</string>
     <string name="txt_no">NO</string>
+    <string name="error_empty_title">Title is empty</string>
+    <string name="error_empty_amount">Amount is empty</string>
 </resources>
