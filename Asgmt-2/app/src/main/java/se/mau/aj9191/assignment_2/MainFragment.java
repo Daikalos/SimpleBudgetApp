@@ -19,6 +19,10 @@ import com.google.android.material.navigation.NavigationView;
 
 public class MainFragment extends Fragment implements BottomNavigationView.OnNavigationItemSelectedListener
 {
+    private static final String HomeTag = "home";
+    private static final String IncomeTag = "income";
+    private static final String ExpenditureTag = "expenditure";
+
     private BottomNavigationView navigationView;
 
     @Override
@@ -59,28 +63,30 @@ public class MainFragment extends Fragment implements BottomNavigationView.OnNav
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         Fragment currentFragment = fragmentManager.findFragmentById(R.id.fcvCurrent);
+        assert currentFragment != null;
+
         String tag = currentFragment.getTag();
 
         switch (item.getItemId())
         {
             case R.id.btnHome:
-                if (tag != null && !tag.equals("home"))
+                if (tag != null && !tag.equals(HomeTag))
                 {
-                    fragmentTransaction.replace(R.id.fcvCurrent, new OverviewFragment(), "home");
+                    fragmentTransaction.replace(R.id.fcvCurrent, new OverviewFragment(), HomeTag);
                 }
                 break;
             case R.id.btnIncome:
-                if (tag == null || !tag.equals("income"))
+                if (tag == null || !tag.equals(IncomeTag))
                 {
-                    fragmentTransaction.replace(R.id.fcvCurrent, new TransactionFragment(TransactionType.Income), "income");
-                    fragmentTransaction.addToBackStack("income");
+                    fragmentTransaction.replace(R.id.fcvCurrent, new TransactionFragment(TransactionType.Income), IncomeTag);
+                    fragmentTransaction.addToBackStack(IncomeTag);
                 }
                 break;
             case R.id.btnExpenditure:
-                if (tag == null || !tag.equals("expenditure"))
+                if (tag == null || !tag.equals(ExpenditureTag))
                 {
-                    fragmentTransaction.replace(R.id.fcvCurrent, new TransactionFragment(TransactionType.Expenditure), "expenditure");
-                    fragmentTransaction.addToBackStack("expenditure");
+                    fragmentTransaction.replace(R.id.fcvCurrent, new TransactionFragment(TransactionType.Expenditure), ExpenditureTag);
+                    fragmentTransaction.addToBackStack(ExpenditureTag);
                 }
                 break;
         }

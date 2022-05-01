@@ -40,8 +40,8 @@ public class TransactionViewModel extends AndroidViewModel
     {
         repository.getBetweenDates(type, since, until);
     }
-    public LiveData<List<Transaction>> getTransactionsPeriod()
+    public LiveData<List<Transaction>> getPeriod()
     {
-        return repository.getTransactionsPeriod();
+        return repository.getPeriod();
     }
 }

@@ -59,6 +59,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="4dp"
                     android:hint="@string/txt_enter_title"
+                    app:boxBackgroundColor="@color/white"
                     app:boxCollapsedPaddingTop="6dp">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -99,6 +100,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="4dp"
                     android:hint="@string/txt_enter_amount"
+                    app:boxBackgroundColor="@color/white"
                     app:boxCollapsedPaddingTop="6dp">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -126,9 +128,9 @@
 
                 <TextView
                     android:id="@+id/tvAddCategory"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_marginEnd="12dp"
                     android:text="@string/txt_category"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
@@ -137,12 +139,12 @@
 
                 <Spinner
                     android:id="@+id/spnrCategory"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:dropDownWidth="wrap_content"
                     android:entries="@array/expenditure"
-                    android:gravity="center_horizontal"
-                    android:popupBackground="@color/blue"
+                    android:gravity="center"
                     android:spinnerMode="dropdown"
                     android:theme="@style/spinnerTheme"
                     tools:ignore="TouchTargetSizeCheck" />

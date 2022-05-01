@@ -16,7 +16,7 @@ public class TransactionRepository
     private LiveData<List<Transaction>> allExpenditure;
     private LiveData<List<Transaction>> allIncome;
 
-    private SingleLiveEvent<List<Transaction>> transactionsPeriod = new SingleLiveEvent<>();
+    private SingleLiveEvent<List<Transaction>> period = new SingleLiveEvent<>();
 
     public TransactionRepository(Application application)
     {
@@ -58,10 +58,10 @@ public class TransactionRepository
     public void getBetweenDates(String type, String since, String until)
     {
         TransactionDatabase.executorService.execute(() ->
-                transactionsPeriod.postValue(transactionDao.getBetweenDates(type, since, until)));
+                period.postValue(transactionDao.getBetweenDates(type, since, until)));
     }
-    LiveData<List<Transaction>> getTransactionsPeriod()
+    LiveData<List<Transaction>> getPeriod()
     {
-        return transactionsPeriod;
+        return period;
     }
 }

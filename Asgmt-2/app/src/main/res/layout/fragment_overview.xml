@@ -21,4 +21,18 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@color/dark_blue"
+            android:orientation="vertical"
+            android:showDividers="middle"/>
+    </ScrollView>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

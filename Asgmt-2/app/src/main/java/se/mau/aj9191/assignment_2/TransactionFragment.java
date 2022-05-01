@@ -1,7 +1,6 @@
 package se.mau.aj9191.assignment_2;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -118,7 +117,7 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
     {
         transactionViewModel.getByType(transactionType).observe(getViewLifecycleOwner(),
                 transactions -> laTransactions.submitList(transactions));
-        transactionViewModel.getTransactionsPeriod().observe(getViewLifecycleOwner(),
+        transactionViewModel.getPeriod().observe(getViewLifecycleOwner(),
                 transactions -> laTransactions.submitList(transactions));
     }
 
@@ -142,9 +141,9 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
 
     private void setPeriod()
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.DateDialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.CustomDialog);
 
-        View datePickerView = LayoutInflater.from(requireContext()).inflate(R.layout.date_picker, null);
+        View datePickerView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_date_period, null);
         builder.setView(datePickerView);
 
         DatePicker datePickerSince = datePickerView.findViewById(R.id.dpSince);

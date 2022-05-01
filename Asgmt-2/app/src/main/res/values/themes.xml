@@ -12,8 +12,9 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@color/very_light_blue</item>
     </style>
-    <style name="DateDialog" parent="Theme.MaterialComponents.Dialog">
+    <style name="CustomDialog" parent="Theme.MaterialComponents.Dialog">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="dialogCornerRadius">16dp</item>
@@ -22,10 +23,10 @@
     <style name="AddDialog" parent="Theme.MaterialComponents.Light.Dialog">
         <item name="colorPrimary">@color/blue</item>
         <item name="colorPrimaryVariant">@color/dark_blue</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnPrimary">@color/light_blue</item>
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <item name="android:windowIsFloating">false</item>
-        <item name="android:windowBackground">@color/white</item>
+        <item name="android:windowBackground">@color/very_light_blue</item>
     </style>
     <style name="WindowSlide">
         <item name="android:windowEnterAnimation">@anim/slide_up</item>
