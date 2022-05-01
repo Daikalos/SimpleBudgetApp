@@ -16,7 +16,7 @@
     <string name="txt_change_name">Change current name</string>
     <string name="title_home">Home</string>
     <string name="title_income">Income</string>
-    <string name="title_expenditure">Expenditure</string>
+    <string name="title_expenses">Expenses</string>
     <string name="title_reset_period">Reset period</string>
     <string name="title_scan_barcode">Scan barcode</string>
     <string name="title_pick_dates">Select Period</string>
@@ -32,4 +32,9 @@
     <string name="error_empty_title">Title is empty</string>
     <string name="error_empty_amount">Amount is empty</string>
     <string name="txt_cancel">Cancel</string>
+    <string name="txt_summary">Summary</string>
+    <string name="txt_income">Income:</string>
+    <string name="txt_expenses">Expenses:</string>
+    <string name="txt_total">Total:</string>
+    <string name="txt_dollars">0$</string>
 </resources>

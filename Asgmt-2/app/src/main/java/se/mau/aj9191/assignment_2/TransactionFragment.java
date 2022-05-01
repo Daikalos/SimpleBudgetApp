@@ -103,6 +103,9 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
 
         toolbar.setTitle(transactionType);
         toolbar.setNavigationIcon(TransactionType.getIconFromType(requireContext(), transactionType));
+
+        if (transactionType.equals(TransactionType.Income))
+            toolbar.getMenu().removeItem(R.id.btnBarcode);
     }
     private void registerListeners()
     {
@@ -150,9 +153,6 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
         DatePicker datePickerUntil = datePickerView.findViewById(R.id.dpUntil);
 
         long time = new Date().getTime();
-
-        datePickerSince.setMaxDate(time);
-        datePickerUntil.setMaxDate(time);
 
         builder.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss());
         builder.setPositiveButton("OK", (dialogInterface, i) ->

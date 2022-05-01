@@ -13,7 +13,7 @@ public class TransactionRepository
     private TransactionDao transactionDao;
 
     private LiveData<List<Transaction>> allTransactions;
-    private LiveData<List<Transaction>> allExpenditure;
+    private LiveData<List<Transaction>> allExpenses;
     private LiveData<List<Transaction>> allIncome;
 
     private SingleLiveEvent<List<Transaction>> period = new SingleLiveEvent<>();
@@ -24,7 +24,7 @@ public class TransactionRepository
         transactionDao = tdb.transactionDao();
 
         allTransactions = transactionDao.getAll();
-        allExpenditure = transactionDao.getByType(TransactionType.Expenditure);
+        allExpenses = transactionDao.getByType(TransactionType.Expenses);
         allIncome = transactionDao.getByType(TransactionType.Income);
     }
 
@@ -45,8 +45,8 @@ public class TransactionRepository
     {
         switch (type)
         {
-            case TransactionType.Expenditure:
-                return allExpenditure;
+            case TransactionType.Expenses:
+                return allExpenses;
             case TransactionType.Income:
                 return allIncome;
             case TransactionType.All:

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -23,6 +24,10 @@ public class OverviewFragment extends Fragment implements Toolbar.OnMenuItemClic
 
     private PrefsViewModel prefsViewModel;
     private TransactionViewModel transactionViewModel;
+
+    private TextView tvIncomeAmount;
+    private TextView tvExpensesAmount;
+    private TextView tvTotalAmount;
 
     @Override
     public void onCreate(Bundle savedInstance)
@@ -53,6 +58,9 @@ public class OverviewFragment extends Fragment implements Toolbar.OnMenuItemClic
     private void initializeComponents(View view)
     {
         toolbar = view.findViewById(R.id.toolbar);
+        tvIncomeAmount = view.findViewById(R.id.tvIncomeAmount);
+        tvExpensesAmount = view.findViewById(R.id.tvExpensesAmount);
+        tvTotalAmount = view.findViewById(R.id.tvTotalAmount);
 
         toolbar.setTitle(prefsViewModel.getFirstName() + " " + prefsViewModel.getSurname());
     }
@@ -64,7 +72,28 @@ public class OverviewFragment extends Fragment implements Toolbar.OnMenuItemClic
     {
         transactionViewModel.getAll().observe(getViewLifecycleOwner(), transactions ->
         {
+            int income = 0;
+            int expenses = 0;
 
+            for (Transaction transaction : transactions)
+            {
+                switch (transaction.getType())
+                {
+                    case TransactionType.Income:
+                        income += transaction.getAmount();
+                        break;
+                    case TransactionType.Expenses:
+                        expenses += transaction.getAmount();
+                        break;
+                }
+            }
+
+            int total = income - expenses;
+
+            tvIncomeAmount.setText(income + "$");
+            if (expenses > 0)
+                tvExpensesAmount.setText("-" + expenses + "$");
+            tvTotalAmount.setText(total + "$");
         });
     }
 

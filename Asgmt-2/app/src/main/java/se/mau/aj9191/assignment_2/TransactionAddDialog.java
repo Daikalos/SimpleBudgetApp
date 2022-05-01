@@ -120,7 +120,6 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
         toolbar.setTitle("Add " + transactionType);
         spnrCategory.setAdapter(new ArrayAdapter<>(requireContext(),
                 R.layout.custom_spinner_item, TransactionCategories.getCategories(transactionType)));
-        datePicker.setMaxDate(new Date().getTime());
     }
     private void registerListeners()
     {

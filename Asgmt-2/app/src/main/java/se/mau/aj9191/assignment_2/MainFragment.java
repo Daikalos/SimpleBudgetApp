@@ -21,7 +21,7 @@ public class MainFragment extends Fragment implements BottomNavigationView.OnNav
 {
     private static final String HomeTag = "home";
     private static final String IncomeTag = "income";
-    private static final String ExpenditureTag = "expenditure";
+    private static final String ExpensesTag = "expenses";
 
     private BottomNavigationView navigationView;
 
@@ -83,10 +83,10 @@ public class MainFragment extends Fragment implements BottomNavigationView.OnNav
                 }
                 break;
             case R.id.btnExpenditure:
-                if (tag == null || !tag.equals(ExpenditureTag))
+                if (tag == null || !tag.equals(ExpensesTag))
                 {
-                    fragmentTransaction.replace(R.id.fcvCurrent, new TransactionFragment(TransactionType.Expenditure), ExpenditureTag);
-                    fragmentTransaction.addToBackStack(ExpenditureTag);
+                    fragmentTransaction.replace(R.id.fcvCurrent, new TransactionFragment(TransactionType.Expenses), ExpensesTag);
+                    fragmentTransaction.addToBackStack(ExpensesTag);
                 }
                 break;
         }

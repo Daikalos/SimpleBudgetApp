@@ -14,7 +14,7 @@ public class TransactionCategories
     public static final String Salary = "Salary";
     public static final String Other = "Other";
 
-    public static String[] Expenditure = { Food, Leisure, Travel, Accommodation, Other };
+    public static String[] Expenses = { Food, Leisure, Travel, Accommodation, Other };
     public static String[] Income = { Salary, Other };
 
     public static Drawable getIconFromType(Context context, String type)
@@ -41,8 +41,8 @@ public class TransactionCategories
     {
         switch (type)
         {
-            case TransactionType.Expenditure:
-                return Expenditure;
+            case TransactionType.Expenses:
+                return Expenses;
             case TransactionType.Income:
                 return Income;
         }

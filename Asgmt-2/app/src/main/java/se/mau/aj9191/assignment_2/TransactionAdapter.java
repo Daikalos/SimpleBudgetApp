@@ -110,7 +110,7 @@ public class TransactionAdapter extends ListAdapter<Transaction, TransactionAdap
         @Override
         public void onClick(View view)
         {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialog);
 
             builder.setTitle(R.string.txt_delete);
             builder.setMessage(R.string.txt_sure);
