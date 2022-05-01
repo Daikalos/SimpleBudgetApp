@@ -3,7 +3,11 @@ package se.mau.aj9191.assignment_2;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
+import android.graphics.Rect;
+import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,7 +16,12 @@ import android.widget.DatePicker;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
+import androidx.camera.core.ImageAnalysis;
+import androidx.camera.core.ImageProxy;
+import androidx.camera.core.Preview;
+import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -20,10 +29,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.mlkit.vision.barcode.BarcodeScanner;
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
+import com.google.mlkit.vision.barcode.BarcodeScanning;
+import com.google.mlkit.vision.barcode.common.Barcode;
+import com.google.mlkit.vision.common.InputImage;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemClickListener
 {
@@ -39,13 +59,8 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
     private RecyclerView rvTransactions;
     private ListAdapter laTransactions;
 
-    private boolean accessCamera = false;
-    private ActivityResultLauncher<String[]> cameraPermissions;
 
-    public TransactionFragment()
-    {
-
-    }
+    public TransactionFragment() { }
     public TransactionFragment(String transactionType)
     {
         this.transactionType = transactionType;
@@ -64,24 +79,6 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
             sinceDate = savedInstance.getString(SinceDate);
             untilDate = savedInstance.getString(UntilDate);
         }
-
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
-            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            accessCamera = true;
-        }
-
-        cameraPermissions = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), results ->
-        {
-            boolean camera = results.get(Manifest.permission.CAMERA);
-            boolean write = results.get(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            boolean read = results.get(Manifest.permission.READ_EXTERNAL_STORAGE);
-
-            if (camera && write && read)
-                accessCamera = true;
-            else
-                ShowToast.show(requireContext(), getResources().getString(R.string.error_permissions));
-        });
     }
 
     @Override
@@ -128,7 +125,7 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
         toolbar.setTitle(transactionType);
         toolbar.setNavigationIcon(TransactionType.getIconFromType(requireContext(), transactionType));
 
-        if (transactionType.equals(TransactionType.Income))
+        if (!transactionType.equals(TransactionType.Expenses))
             toolbar.getMenu().removeItem(R.id.btnBarcode);
     }
     private void registerListeners()
@@ -160,7 +157,7 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
                 undo();
                 break;
             case R.id.btnBarcode:
-                scanBarcode();
+                BarcodeScanDialog.display(getChildFragmentManager());
                 break;
         }
         return true;
@@ -175,8 +172,6 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
 
         DatePicker datePickerSince = datePickerView.findViewById(R.id.dpSince);
         DatePicker datePickerUntil = datePickerView.findViewById(R.id.dpUntil);
-
-        long time = new Date().getTime();
 
         builder.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss());
         builder.setPositiveButton("OK", (dialogInterface, i) ->
@@ -204,20 +199,5 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
     {
         sinceDate = untilDate = "";
         laTransactions.submitList(transactionViewModel.getByType(transactionType).getValue());
-    }
-
-    private void scanBarcode()
-    {
-        if (accessCamera)
-        {
-
-        }
-        else
-        {
-            cameraPermissions.launch(new String[]{
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE});
-        }
     }
 }

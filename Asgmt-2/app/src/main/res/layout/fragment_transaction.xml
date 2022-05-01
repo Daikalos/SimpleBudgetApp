@@ -36,4 +36,9 @@
         android:src="@drawable/ic_add"
         app:backgroundTint="@color/dark_blue" />
 
+    <androidx.camera.view.PreviewView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:/>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

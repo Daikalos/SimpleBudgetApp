@@ -57,7 +57,7 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
     {
         super.onCreate(savedInstance);
 
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.AddDialog);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.FragmentDialog);
         transactionViewModel = new ViewModelProvider(requireActivity()).get(TransactionViewModel.class);
 
         if (savedInstance != null)

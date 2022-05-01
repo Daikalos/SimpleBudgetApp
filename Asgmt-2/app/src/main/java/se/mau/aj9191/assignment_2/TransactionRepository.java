@@ -68,6 +68,11 @@ public class TransactionRepository
         return period;
     }
 
+    public void insert(BarcodeEntity barcode)
+    {
+        TransactionDatabase.executorService.execute(() -> barcodeDao.insert(barcode));
+    }
+
     public void findBarcode(@NonNull String barcode)
     {
         TransactionDatabase.executorService.execute(() ->
