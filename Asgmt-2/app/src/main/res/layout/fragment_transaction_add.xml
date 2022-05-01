@@ -143,7 +143,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:dropDownWidth="wrap_content"
-                    android:entries="@array/expenditure"
                     android:gravity="center"
                     android:spinnerMode="dropdown"
                     android:theme="@style/spinnerTheme"

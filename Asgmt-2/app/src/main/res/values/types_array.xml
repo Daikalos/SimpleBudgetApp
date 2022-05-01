@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string-array name="transactionTypes">
-        <item>Expenditure</item>
-        <item>Income</item>
-    </string-array>
-</resources>

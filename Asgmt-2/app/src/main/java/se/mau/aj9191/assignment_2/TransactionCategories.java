@@ -46,6 +46,6 @@ public class TransactionCategories
             case TransactionType.Income:
                 return Income;
         }
-        return null;
+        return new String[0];
     }
 }

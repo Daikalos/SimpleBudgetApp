@@ -13,8 +13,22 @@ import java.util.Date;
 
 class DateConverter
 {
-    private static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-    private static final DateFormat mdf = new SimpleDateFormat("MMM dd yyyy");
+    private static final ThreadLocal<SimpleDateFormat> df = new ThreadLocal<SimpleDateFormat>()
+    {
+        @Override
+        protected SimpleDateFormat initialValue()
+        {
+            return new SimpleDateFormat("yyyy-MM-dd");
+        }
+    };
+    private static final ThreadLocal<SimpleDateFormat> mdf = new ThreadLocal<SimpleDateFormat>()
+    {
+        @Override
+        protected SimpleDateFormat initialValue()
+        {
+            return new SimpleDateFormat("MMM dd yyyy");
+        }
+    };
 
     @TypeConverter
     public static Date fromTimestamp(String value)
@@ -23,7 +37,7 @@ class DateConverter
         {
             try
             {
-                return df.parse(value);
+                return df.get().parse(value);
             }
             catch (ParseException e)
             {
@@ -38,7 +52,7 @@ class DateConverter
     @TypeConverter
     public static String toTimestamp(Date date)
     {
-        return df.format(date);
+        return df.get().format(date);
     }
 
     @Ignore
@@ -47,12 +61,17 @@ class DateConverter
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, day);
 
-        return df.format(calendar.getTime());
+        return df.get().format(calendar.getTime());
     }
 
     @Ignore
     public static String format(Date value)
     {
-        return mdf.format(value);
+        return mdf.get().format(value);
+    }
+    @Ignore
+    public static String format(long value)
+    {
+        return df.get().format(value);
     }
 }

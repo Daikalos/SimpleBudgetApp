@@ -49,8 +49,6 @@ public class TransactionRepository
                 return allExpenses;
             case TransactionType.Income:
                 return allIncome;
-            case TransactionType.All:
-                return allTransactions;
         }
         return transactionDao.getByType(type);
     }

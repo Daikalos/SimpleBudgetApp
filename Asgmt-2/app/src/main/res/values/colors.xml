@@ -11,4 +11,14 @@
     <color name="blue">#408BDC</color>
     <color name="light_blue">#54A4CF</color>
     <color name="very_light_blue">#B4DDF8</color>
+    <array name="pie_chart_colors">
+        <item>#FF304567</item>
+        <item>#FF309967</item>
+        <item>#FF309967</item>
+        <item>#FF476567</item>
+        <item>#FF890567</item>
+        <item>#FFa35567</item>
+        <item>#FFff5f67</item>
+        <item>#FF3ca567</item>
+    </array>
 </resources>

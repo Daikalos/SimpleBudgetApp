@@ -9,7 +9,6 @@ public class TransactionType
 {
     public static final String Expenses = "Expenses";
     public static final String Income = "Income";
-    public static final String All = "All";
 
     public static final String[] Type = { Expenses, Income };
 
