@@ -21,26 +21,26 @@ public class TransactionViewModel extends AndroidViewModel
         repository = new TransactionRepository(application);
     }
 
-    public void insert(Transaction transaction)
+    public void insert(TransactionEntity transaction)
     {
         repository.insert(transaction);
     }
     public void delete(int id) { repository.delete(id); }
 
-    public LiveData<List<Transaction>> getAll()
+    public LiveData<List<TransactionEntity>> getAll()
     {
         return repository.getAll();
     }
-    public LiveData<List<Transaction>> getByType(String type)
+    public LiveData<List<TransactionEntity>> getByType(String type)
     {
         return repository.getByType(type);
     }
 
-    public void getBetweenDates(String type, String since, String until)
+    public void selectPeriod(String type, String since, String until)
     {
-        repository.getBetweenDates(type, since, until);
+        repository.selectPeriod(type, since, until);
     }
-    public LiveData<List<Transaction>> getPeriod()
+    public LiveData<List<TransactionEntity>> getPeriod()
     {
         return repository.getPeriod();
     }

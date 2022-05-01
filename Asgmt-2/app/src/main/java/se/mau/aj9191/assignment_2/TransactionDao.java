@@ -12,17 +12,17 @@ import java.util.List;
 public interface TransactionDao
 {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insert(Transaction transaction);
+    void insert(TransactionEntity transaction);
 
     @Query("DELETE FROM transaction_table WHERE id = :id")
     void delete(int id);
 
     @Query("SELECT * FROM transaction_table")
-    LiveData<List<Transaction>> getAll();
+    LiveData<List<TransactionEntity>> getAll();
 
     @Query("SELECT * FROM transaction_table WHERE type = :type ORDER BY date DESC")
-    LiveData<List<Transaction>> getByType(String type);
+    LiveData<List<TransactionEntity>> getByType(String type);
 
     @Query("SELECT * FROM transaction_table WHERE type = :type AND date BETWEEN :since AND :until ORDER BY date DESC")
-    List<Transaction> getBetweenDates(String type, String since, String until);
+    List<TransactionEntity> getBetweenDates(String type, String since, String until);
 }

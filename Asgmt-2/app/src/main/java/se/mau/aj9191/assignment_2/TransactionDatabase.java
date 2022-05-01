@@ -5,16 +5,15 @@ import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import androidx.room.TypeConverters;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Transaction.class}, version = 1, exportSchema = false)
+@Database(entities = {TransactionEntity.class, BarcodeEntity.class}, version = 1, exportSchema = false)
 public abstract class TransactionDatabase extends RoomDatabase
 {
     public abstract TransactionDao transactionDao();
+    public abstract BarcodeDao barcodeDao();
 
     private static volatile TransactionDatabase INSTANCE;
 

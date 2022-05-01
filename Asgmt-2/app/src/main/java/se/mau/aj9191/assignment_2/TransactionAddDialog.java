@@ -174,8 +174,8 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
             int month = datePicker.getMonth();
             int year = datePicker.getYear();
 
-            transactionViewModel.insert(new Transaction(transactionType, spnrCategory.getSelectedItem().toString(),
-                    title, DateConverter.fromTimestamp(DateConverter.convert(year, month, day)), Integer.parseInt(amount)));
+            transactionViewModel.insert(new TransactionEntity(new Transaction(transactionType, spnrCategory.getSelectedItem().toString(),
+                    title, DateConverter.fromTimestamp(DateConverter.convert(year, month, day)), Integer.parseInt(amount))));
 
             dismiss();
         }

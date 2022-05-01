@@ -9,31 +9,13 @@ import androidx.room.TypeConverters;
 import java.util.Date;
 import java.util.UUID;
 
-@Entity(tableName = "transaction_table")
 public class Transaction
 {
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
-    private int id;
-
-    @NonNull
-    @ColumnInfo(name = "type")
     private final String type;
-
-    @NonNull
-    @ColumnInfo(name = "category")
     private final String category;
-
-    @NonNull
-    @ColumnInfo(name = "title")
     private final String title;
-
-    @NonNull
-    @ColumnInfo(name = "date")
     @TypeConverters({DateConverter.class})
     private final Date date;
-
-    @ColumnInfo(name = "amount")
     private final int amount;
 
     public Transaction(@NonNull String type,
@@ -47,15 +29,6 @@ public class Transaction
         this.title = title;
         this.date = date;
         this.amount = amount;
-    }
-
-    public int getId()
-    {
-        return id;
-    }
-    public void setId(int id)
-    {
-        this.id = id;
     }
 
     public String getType()
@@ -79,18 +52,12 @@ public class Transaction
         return amount;
     }
 
-    @Override
-    public boolean equals(Object other)
+    public boolean equals(Transaction other)
     {
-        if (other.getClass() != Transaction.class)
-            return false;
-
-        Transaction transaction = (Transaction)other;
-
-        return type.equals(transaction.getType()) &&
-                category.equals(transaction.getCategory()) &&
-                title.equals(transaction.getTitle()) &&
-                date.equals(transaction.getDate()) &&
-                amount == transaction.getAmount();
+        return type.equals(other.getType()) &&
+                category.equals(other.getCategory()) &&
+                title.equals(other.getTitle()) &&
+                date.equals(other.getDate()) &&
+                amount == other.getAmount();
     }
 }

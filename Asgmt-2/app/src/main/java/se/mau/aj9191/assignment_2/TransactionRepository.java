@@ -2,6 +2,7 @@ package se.mau.aj9191.assignment_2;
 
 import android.app.Application;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -10,25 +11,29 @@ import java.util.concurrent.Future;
 
 public class TransactionRepository
 {
-    private TransactionDao transactionDao;
+    private final TransactionDao transactionDao;
+    private final BarcodeDao barcodeDao;
 
-    private LiveData<List<Transaction>> allTransactions;
-    private LiveData<List<Transaction>> allExpenses;
-    private LiveData<List<Transaction>> allIncome;
+    private LiveData<List<TransactionEntity>> allTransactions;
+    private LiveData<List<TransactionEntity>> allExpenses;
+    private LiveData<List<TransactionEntity>> allIncome;
 
-    private SingleLiveEvent<List<Transaction>> period = new SingleLiveEvent<>();
+    private SingleLiveEvent<List<TransactionEntity>> period = new SingleLiveEvent<>();
+
+    private SingleLiveEvent<BarcodeEntity> barcodeEntity = new SingleLiveEvent<>();
 
     public TransactionRepository(Application application)
     {
         TransactionDatabase tdb = TransactionDatabase.getDatabase(application);
         transactionDao = tdb.transactionDao();
+        barcodeDao = tdb.barcodeDao();
 
         allTransactions = transactionDao.getAll();
         allExpenses = transactionDao.getByType(TransactionType.Expenses);
         allIncome = transactionDao.getByType(TransactionType.Income);
     }
 
-    public void insert(Transaction transaction)
+    public void insert(TransactionEntity transaction)
     {
         TransactionDatabase.executorService.execute(() -> transactionDao.insert(transaction));
     }
@@ -37,11 +42,11 @@ public class TransactionRepository
         TransactionDatabase.executorService.execute(() -> transactionDao.delete(id));
     }
 
-    LiveData<List<Transaction>> getAll()
+    LiveData<List<TransactionEntity>> getAll()
     {
         return allTransactions;
     }
-    LiveData<List<Transaction>> getByType(String type)
+    LiveData<List<TransactionEntity>> getByType(String type)
     {
         switch (type)
         {
@@ -53,13 +58,23 @@ public class TransactionRepository
         return transactionDao.getByType(type);
     }
 
-    public void getBetweenDates(String type, String since, String until)
+    public void selectPeriod(String type, String since, String until)
     {
         TransactionDatabase.executorService.execute(() ->
                 period.postValue(transactionDao.getBetweenDates(type, since, until)));
     }
-    LiveData<List<Transaction>> getPeriod()
+    LiveData<List<TransactionEntity>> getPeriod()
     {
         return period;
+    }
+
+    public void findBarcode(@NonNull String barcode)
+    {
+        TransactionDatabase.executorService.execute(() ->
+                barcodeEntity.postValue(barcodeDao.find(barcode)));
+    }
+    public LiveData<BarcodeEntity> getBarcode()
+    {
+        return barcodeEntity;
     }
 }

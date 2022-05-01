@@ -56,4 +56,5 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$rootProject.androidxJunitVersion"
 
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+	implementation 'com.google.mlkit:barcode-scanning:17.0.2'
 }

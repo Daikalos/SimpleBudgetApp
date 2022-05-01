@@ -1,6 +1,8 @@
 package se.mau.aj9191.assignment_2;
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -8,7 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,7 +39,8 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
     private RecyclerView rvTransactions;
     private ListAdapter laTransactions;
 
-    Random random = new Random();
+    private boolean accessCamera = false;
+    private ActivityResultLauncher<String[]> cameraPermissions;
 
     public TransactionFragment()
     {
@@ -58,6 +64,24 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
             sinceDate = savedInstance.getString(SinceDate);
             untilDate = savedInstance.getString(UntilDate);
         }
+
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            accessCamera = true;
+        }
+
+        cameraPermissions = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), results ->
+        {
+            boolean camera = results.get(Manifest.permission.CAMERA);
+            boolean write = results.get(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            boolean read = results.get(Manifest.permission.READ_EXTERNAL_STORAGE);
+
+            if (camera && write && read)
+                accessCamera = true;
+            else
+                ShowToast.show(requireContext(), getResources().getString(R.string.error_permissions));
+        });
     }
 
     @Override
@@ -88,7 +112,7 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
         if (savedInstance != null)
         {
             if (!sinceDate.isEmpty() && !untilDate.isEmpty())
-                transactionViewModel.getBetweenDates(transactionType, sinceDate, untilDate);
+                transactionViewModel.selectPeriod(transactionType, sinceDate, untilDate);
         }
     }
 
@@ -136,7 +160,7 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
                 undo();
                 break;
             case R.id.btnBarcode:
-
+                scanBarcode();
                 break;
         }
         return true;
@@ -165,7 +189,7 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
             int untilMonth = datePickerUntil.getMonth();
             int untilYear = datePickerUntil.getYear();
 
-            transactionViewModel.getBetweenDates(transactionType,
+            transactionViewModel.selectPeriod(transactionType,
                     sinceDate = DateConverter.convert(sinceYear, sinceMonth, sinceDay),
                     untilDate = DateConverter.convert(untilYear, untilMonth, untilDay));
 
@@ -180,5 +204,20 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
     {
         sinceDate = untilDate = "";
         laTransactions.submitList(transactionViewModel.getByType(transactionType).getValue());
+    }
+
+    private void scanBarcode()
+    {
+        if (accessCamera)
+        {
+
+        }
+        else
+        {
+            cameraPermissions.launch(new String[]{
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE});
+        }
     }
 }

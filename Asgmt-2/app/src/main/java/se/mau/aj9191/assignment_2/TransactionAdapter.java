@@ -15,12 +15,12 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class TransactionAdapter extends ListAdapter<Transaction, TransactionAdapter.TransactionHolder>
+public class TransactionAdapter extends ListAdapter<TransactionEntity, TransactionAdapter.TransactionHolder>
 {
     private final Context context;
     private final  TransactionViewModel transactionViewModel;
 
-    public TransactionAdapter(@NonNull DiffUtil.ItemCallback<Transaction> diffCallback, Context context, TransactionViewModel transactionViewModel)
+    public TransactionAdapter(@NonNull DiffUtil.ItemCallback<TransactionEntity> diffCallback, Context context, TransactionViewModel transactionViewModel)
     {
         super(diffCallback);
 
@@ -38,20 +38,20 @@ public class TransactionAdapter extends ListAdapter<Transaction, TransactionAdap
     @Override
     public void onBindViewHolder(@NonNull TransactionHolder holder, int position)
     {
-        Transaction current = getItem(position);
+        TransactionEntity current = getItem(position);
         holder.bind(current);
     }
 
-    protected static class TransactionDiff extends DiffUtil.ItemCallback<Transaction>
+    protected static class TransactionDiff extends DiffUtil.ItemCallback<TransactionEntity>
     {
         @Override
-        public boolean areItemsTheSame(@NonNull Transaction oldItem, @NonNull Transaction newItem)
+        public boolean areItemsTheSame(@NonNull TransactionEntity oldItem, @NonNull TransactionEntity newItem)
         {
             return oldItem.getId() == newItem.getId();
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull Transaction oldItem, @NonNull Transaction newItem)
+        public boolean areContentsTheSame(@NonNull TransactionEntity oldItem, @NonNull TransactionEntity newItem)
         {
             return oldItem.equals(newItem);
         }
@@ -69,7 +69,7 @@ public class TransactionAdapter extends ListAdapter<Transaction, TransactionAdap
         private final TextView tvAmount;
         private final ImageButton btnRemove;
 
-        private Transaction transaction;
+        private TransactionEntity transaction;
 
         public TransactionHolder(@NonNull View itemView, Context context, TransactionViewModel transactionViewModel)
         {
@@ -86,7 +86,7 @@ public class TransactionAdapter extends ListAdapter<Transaction, TransactionAdap
             btnRemove = itemView.findViewById(R.id.btnRemove);
         }
 
-        public void bind(Transaction transaction)
+        public void bind(TransactionEntity transaction)
         {
             this.transaction = transaction;
 

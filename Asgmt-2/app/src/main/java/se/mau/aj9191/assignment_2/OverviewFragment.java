@@ -113,12 +113,12 @@ public class OverviewFragment extends Fragment implements Toolbar.OnMenuItemClic
         return true;
     }
 
-    private void calculateSummary(List<Transaction> transactions)
+    private void calculateSummary(List<TransactionEntity> transactions)
     {
         int income = 0;
         int expenses = 0;
 
-        for (Transaction transaction : transactions)
+        for (TransactionEntity transaction : transactions)
         {
             switch (transaction.getType())
             {
@@ -137,12 +137,12 @@ public class OverviewFragment extends Fragment implements Toolbar.OnMenuItemClic
         tvIncomeAmount.setText(income + "$");
         tvTotalAmount.setText((income - expenses) + "$");
     }
-    private void addIncomeChart(List<Transaction> transactions)
+    private void addIncomeChart(List<TransactionEntity> transactions)
     {
         HashMap<String, List<Entry>> entries = new HashMap<>();
         for (int i = transactions.size() - 1; i >= 0; --i)
         {
-            Transaction transaction = transactions.get(i);
+            TransactionEntity transaction = transactions.get(i);
 
             String category = transaction.getCategory();
             Date date = transaction.getDate();
@@ -209,12 +209,12 @@ public class OverviewFragment extends Fragment implements Toolbar.OnMenuItemClic
             chartIncome.invalidate();
         }
     }
-    private void addExpensesChart(List<Transaction> transactions)
+    private void addExpensesChart(List<TransactionEntity> transactions)
     {
         List<PieEntry> entries = new ArrayList<>();
         for (int i = transactions.size() - 1; i >= 0; --i)
         {
-            Transaction transaction = transactions.get(i);
+            TransactionEntity transaction = transactions.get(i);
 
             String category = transaction.getCategory();
             int amount = transaction.getAmount();
