@@ -211,7 +211,8 @@ public class OverviewFragment extends Fragment implements Toolbar.OnMenuItemClic
     }
     private void addExpensesChart(List<TransactionEntity> transactions)
     {
-        List<PieEntry> entries = new ArrayList<>();
+        HashMap<String, Integer> categoryAmounts = new HashMap<>();
+
         for (int i = transactions.size() - 1; i >= 0; --i)
         {
             TransactionEntity transaction = transactions.get(i);
@@ -219,22 +220,29 @@ public class OverviewFragment extends Fragment implements Toolbar.OnMenuItemClic
             String category = transaction.getCategory();
             int amount = transaction.getAmount();
 
-            entries.add(new PieEntry(amount, category));
+            if (!categoryAmounts.containsKey(category))
+                categoryAmounts.put(category, 0);
+
+            categoryAmounts.put(category, categoryAmounts.get(category) + amount);
+        }
+
+        List<PieEntry> entries = new ArrayList<>();
+        for (String category : categoryAmounts.keySet())
+        {
+            entries.add(new PieEntry(categoryAmounts.get(category), category));
         }
 
         int[] colorArray = getResources().getIntArray(R.array.pie_chart_colors);
         ArrayList<Integer> colors = new ArrayList<>(entries.size());
-        for (int i = 0; i < entries.size(); ++i)
-            colors.add(colorArray[i]);
+        for (int j : colorArray)
+            colors.add(j);
 
-        PieData pieData = new PieData();
         PieDataSet dataSet = new PieDataSet(entries, "");
+        PieData pieData = new PieData(dataSet);
 
         dataSet.setColors(colors);
         dataSet.setValueTextSize(14);
         dataSet.setValueFormatter(new PieValueFormatter());
-
-        pieData.addDataSet(dataSet);
 
         chartExpenses.getDescription().setEnabled(false);
         chartExpenses.getLegend().setEnabled(false);

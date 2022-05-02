@@ -31,10 +31,10 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
 
     private TransactionViewModel transactionViewModel;
 
-    private String transactionType;
-    private int selectedType;
-    private int selectedCategory;
-    private String barcodeValue;
+    private String transactionType = "";
+    private String barcodeValue = "";
+    private int selectedType = 0;
+    private int selectedCategory = 0;
 
     private Toolbar toolbar;
     private EditText edTitle;
@@ -49,10 +49,11 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
         this.barcodeValue = barcodeValue;
     }
 
-    public static void display(String type, String barcodeValue, FragmentManager fragmentManager)
+    public static TransactionAddDialog display(String type, String barcodeValue, FragmentManager fragmentManager)
     {
         TransactionAddDialog createTransactionDialog = new TransactionAddDialog(type, barcodeValue);
         createTransactionDialog.show(fragmentManager, Tag);
+        return createTransactionDialog;
     }
 
     @Override

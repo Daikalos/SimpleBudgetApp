@@ -193,7 +193,7 @@ public class BarcodeScanDialog extends DialogFragment
                     for (Barcode barcode : barcodes)
                     {
                         String rawValue = barcode.getRawValue();
-                        if (barcode.getValueType() == Barcode.TYPE_PRODUCT && rawValue != null)
+                        if (barcode.getValueType() == Barcode.TYPE_PRODUCT && rawValue != null && !rawValue.isEmpty())
                         {
                             isProcessing = false;
                             barcodeValue = rawValue;
@@ -217,6 +217,8 @@ public class BarcodeScanDialog extends DialogFragment
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.CustomDialog);
 
         builder.setTitle(R.string.txt_barcode_detected);
+        builder.setMessage(barcodeValue);
+
         builder.setCancelable(false);
 
         if (barcodeEntity != null)
