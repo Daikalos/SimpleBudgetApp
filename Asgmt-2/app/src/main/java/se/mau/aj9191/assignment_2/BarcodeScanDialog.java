@@ -1,7 +1,9 @@
 package se.mau.aj9191.assignment_2;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.media.Image;
 import android.os.Bundle;
@@ -30,6 +32,7 @@ import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -59,6 +62,8 @@ public class BarcodeScanDialog extends DialogFragment
                     Barcode.FORMAT_CODE_128, Barcode.FORMAT_UPC_A,
                     Barcode.FORMAT_EAN_13, Barcode.FORMAT_EAN_8,
                     Barcode.FORMAT_CODE_93).build();
+
+    private boolean isProcessing = true;
 
     public static void display(FragmentManager fragmentManager)
     {
@@ -116,6 +121,7 @@ public class BarcodeScanDialog extends DialogFragment
 
         initializeComponents(view);
         registerListeners();
+        addObservers();
     }
 
     private void initializeComponents(View view)
@@ -126,6 +132,16 @@ public class BarcodeScanDialog extends DialogFragment
     private void registerListeners()
     {
         toolbar.setNavigationOnClickListener(view -> dismiss());
+    }
+    private void addObservers()
+    {
+        transactionViewModel.getBarcode().observe(getViewLifecycleOwner(), barcodeEntity ->
+        {
+            if (barcodeEntity == null)
+                setBarcodeItem();
+            else
+                addBarcodeItem();
+        });
     }
 
     private void scanBarcode()
@@ -165,6 +181,12 @@ public class BarcodeScanDialog extends DialogFragment
         @androidx.camera.core.ExperimentalGetImage
         public void analyze(@NonNull ImageProxy imageProxy)
         {
+            if (!isProcessing)
+            {
+                imageProxy.close();
+                return;
+            }
+
             Image mediaImage = imageProxy.getImage();
             if (mediaImage != null)
             {
@@ -176,10 +198,10 @@ public class BarcodeScanDialog extends DialogFragment
                     for (Barcode barcode : barcodes)
                     {
                         String rawValue = barcode.getRawValue();
-
                         if (barcode.getValueType() == Barcode.TYPE_PRODUCT)
                         {
-                            
+                            isProcessing = false;
+                            transactionViewModel.findBarcode(rawValue);
                         }
                     }
                 })
@@ -191,5 +213,56 @@ public class BarcodeScanDialog extends DialogFragment
                 .addOnCompleteListener(task -> imageProxy.close());
             }
         }
+    }
+
+    private void setBarcodeItem()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.CustomDialog);
+
+        builder.setTitle(R.string.txt_barcode_detected);
+        builder.setCancelable(false);
+
+        builder.setNegativeButton(R.string.txt_set, (dialogInterface, i) ->
+        {
+
+            dialogInterface.dismiss();
+            isProcessing = true;
+        });
+        builder.setNeutralButton(R.string.txt_cancel, (dialogInterface, i) ->
+        {
+            dialogInterface.dismiss();
+            isProcessing = true;
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+    private void addBarcodeItem()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.CustomDialog);
+
+        builder.setTitle(R.string.txt_barcode_detected);
+        builder.setCancelable(false);
+
+        builder.setPositiveButton(R.string.txt_add, (dialogInterface, i) ->
+        {
+
+            dialogInterface.dismiss();
+            isProcessing = true;
+        });
+        builder.setNegativeButton(R.string.txt_set, (dialogInterface, i) ->
+        {
+
+            dialogInterface.dismiss();
+            isProcessing = true;
+        });
+        builder.setNeutralButton(R.string.txt_cancel, (dialogInterface, i) ->
+        {
+            dialogInterface.dismiss();
+            isProcessing = true;
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 }

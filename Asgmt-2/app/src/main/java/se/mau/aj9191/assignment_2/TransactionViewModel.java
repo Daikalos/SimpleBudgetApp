@@ -3,6 +3,7 @@ package se.mau.aj9191.assignment_2;
 import android.app.Application;
 import android.util.Pair;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -12,8 +13,6 @@ import java.util.List;
 public class TransactionViewModel extends AndroidViewModel
 {
     private TransactionRepository repository;
-
-    private SingleLiveEvent<List<Transaction>> transactionsPeriod = new SingleLiveEvent<>();
 
     public TransactionViewModel(Application application)
     {
@@ -43,5 +42,14 @@ public class TransactionViewModel extends AndroidViewModel
     public LiveData<List<TransactionEntity>> getPeriod()
     {
         return repository.getPeriod();
+    }
+
+    public void findBarcode(@NonNull String barcode)
+    {
+        repository.findBarcode(barcode);
+    }
+    public LiveData<BarcodeEntity> getBarcode()
+    {
+        return repository.getBarcode();
     }
 }
