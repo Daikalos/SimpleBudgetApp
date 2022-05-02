@@ -16,9 +16,16 @@
             android:layout_height="?actionBarSize"
             android:background="@color/blue"
             app:navigationIcon="@drawable/ic_close"
-            app:title="@string/title_add_transaction"
-            app:titleTextColor="@color/black"/>
+            app:title="@string/title_scan_barcode"
+            app:titleTextColor="@color/black" />
 
     </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/previewView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:scaleType="fitCenter" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -18,7 +18,7 @@
     <string name="title_income">Income</string>
     <string name="title_expenses">Expenses</string>
     <string name="title_reset_period">Reset period</string>
-    <string name="title_scan_barcode">Scan barcode</string>
+    <string name="title_scan_barcode">Scan Barcode</string>
     <string name="title_pick_dates">Select Period</string>
     <string name="title_add_transaction">Add Transaction</string>
     <string name="desc_remove">Removes the transaction</string>

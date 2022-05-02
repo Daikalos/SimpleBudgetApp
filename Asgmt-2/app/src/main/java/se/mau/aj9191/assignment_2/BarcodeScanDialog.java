@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,15 +21,18 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
+import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageProxy;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
+import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
@@ -47,10 +51,10 @@ public class BarcodeScanDialog extends DialogFragment
     private TransactionViewModel transactionViewModel;
 
     private Toolbar toolbar;
+    private PreviewView previewView;
 
     private BarcodeScanner barcodeScanner;
-    private BarcodeScannerOptions barcodeScannerOptions = new BarcodeScannerOptions.Builder()
-            .setBarcodeFormats(
+    private final BarcodeScannerOptions barcodeScannerOptions = new BarcodeScannerOptions.Builder().setBarcodeFormats(
                     Barcode.FORMAT_CODABAR, Barcode.FORMAT_CODE_39,
                     Barcode.FORMAT_CODE_128, Barcode.FORMAT_UPC_A,
                     Barcode.FORMAT_EAN_13, Barcode.FORMAT_EAN_8,
@@ -58,8 +62,8 @@ public class BarcodeScanDialog extends DialogFragment
 
     public static void display(FragmentManager fragmentManager)
     {
-        TransactionAddDialog createTransactionDialog = new TransactionAddDialog();
-        createTransactionDialog.show(fragmentManager, Tag);
+        BarcodeScanDialog barcodeScanDialog = new BarcodeScanDialog();
+        barcodeScanDialog.show(fragmentManager, Tag);
     }
 
     @Override
@@ -102,14 +106,7 @@ public class BarcodeScanDialog extends DialogFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.fragment_transaction_add, container, false);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstance)
-    {
-
-        super.onSaveInstanceState(savedInstance);
+        return inflater.inflate(R.layout.fragment_barcode_scan, container, false);
     }
 
     @Override
@@ -124,6 +121,7 @@ public class BarcodeScanDialog extends DialogFragment
     private void initializeComponents(View view)
     {
         toolbar = view.findViewById(R.id.toolbar);
+        previewView = view.findViewById(R.id.previewView);
     }
     private void registerListeners()
     {
@@ -134,27 +132,34 @@ public class BarcodeScanDialog extends DialogFragment
     {
         ListenableFuture<ProcessCameraProvider> instance = ProcessCameraProvider.getInstance(requireContext());
         instance.addListener(() ->
-                {
-                    try
-                    {
-                        ProcessCameraProvider cameraProvider = instance.get();
+        {
+            try
+            {
+                ProcessCameraProvider cameraProvider = instance.get();
 
-                        Preview preview = new Preview.Builder().build();
+                Preview preview = new Preview.Builder().build();
 
-                    }
-                    catch (ExecutionException e)
-                    {
-                        e.printStackTrace();
-                    }
-                    catch (InterruptedException e)
-                    {
-                        e.printStackTrace();
-                    }
-                },
-                ContextCompat.getMainExecutor(requireContext()));
+                preview.setSurfaceProvider(previewView.getSurfaceProvider());
+
+                ImageAnalysis imageAnalysis = new ImageAnalysis.Builder().setTargetResolution(new Size(1280, 720)).setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST).build();
+                imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), new BarcodeAnalyzer());
+
+                cameraProvider.unbindAll();
+                cameraProvider.bindToLifecycle(getViewLifecycleOwner(), CameraSelector.DEFAULT_BACK_CAMERA, imageAnalysis, preview);
+            }
+            catch (ExecutionException e)
+            {
+                e.printStackTrace();
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        },
+        ContextCompat.getMainExecutor(requireContext()));
     }
 
-    private class ImageAnalyzer implements ImageAnalysis.Analyzer
+    private class BarcodeAnalyzer implements ImageAnalysis.Analyzer
     {
         @Override
         @androidx.camera.core.ExperimentalGetImage
@@ -165,24 +170,25 @@ public class BarcodeScanDialog extends DialogFragment
             {
                 InputImage image = InputImage.fromMediaImage(mediaImage, imageProxy.getImageInfo().getRotationDegrees());
 
-                Task<List<Barcode>> result = barcodeScanner.process(image).addOnSuccessListener(barcodes ->
+                Task<List<Barcode>> result = barcodeScanner.process(image)
+                .addOnSuccessListener(barcodes ->
                 {
                     for (Barcode barcode : barcodes)
                     {
                         String rawValue = barcode.getRawValue();
 
-                        int valueType = barcode.getValueType();
-                        if (valueType == Barcode.TYPE_PRODUCT)
+                        if (barcode.getValueType() == Barcode.TYPE_PRODUCT)
                         {
-
+                            
                         }
                     }
                 })
-                        .addOnFailureListener(e ->
-                        {
-                            e.printStackTrace();
-                            Log.d("error", e.getMessage());
-                        });
+                .addOnFailureListener(e ->
+                {
+                    e.printStackTrace();
+                    Log.d("error", e.getMessage());
+                })
+                .addOnCompleteListener(task -> imageProxy.close());
             }
         }
     }

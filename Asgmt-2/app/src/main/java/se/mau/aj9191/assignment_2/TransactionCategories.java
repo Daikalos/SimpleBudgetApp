@@ -3,6 +3,7 @@ package se.mau.aj9191.assignment_2;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
 public class TransactionCategories
@@ -37,7 +38,7 @@ public class TransactionCategories
         return null;
     }
 
-    public static String[] getCategories(String type)
+    public static String[] getCategories(@NonNull String type)
     {
         switch (type)
         {
