@@ -25,6 +25,7 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
     public static final String Tag = "transaction_add_dialog";
 
     private static final String AddTransactionType = "AddTransactionType";
+    private static final String BarcodeValue = "BarcodeValue";
     private static final String SelectedType = "SelectedType";
     private static final String SelectedCategory = "SelectedCategory";
 
@@ -33,6 +34,7 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
     private String transactionType;
     private int selectedType;
     private int selectedCategory;
+    private String barcodeValue;
 
     private Toolbar toolbar;
     private EditText edTitle;
@@ -41,14 +43,15 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
     private DatePicker datePicker;
 
     public TransactionAddDialog() { }
-    public TransactionAddDialog(String type)
+    public TransactionAddDialog(String type, String barcodeValue)
     {
         this.transactionType = type;
+        this.barcodeValue = barcodeValue;
     }
 
-    public static void display(String type, FragmentManager fragmentManager)
+    public static void display(String type, String barcodeValue, FragmentManager fragmentManager)
     {
-        TransactionAddDialog createTransactionDialog = new TransactionAddDialog(type);
+        TransactionAddDialog createTransactionDialog = new TransactionAddDialog(type, barcodeValue);
         createTransactionDialog.show(fragmentManager, Tag);
     }
 
@@ -63,6 +66,7 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
         if (savedInstance != null)
         {
             transactionType = savedInstance.getString(AddTransactionType);
+            barcodeValue = savedInstance.getString(BarcodeValue);
             selectedType = savedInstance.getInt(SelectedType);
             selectedCategory = savedInstance.getInt(SelectedCategory);
         }
@@ -89,6 +93,7 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
     public void onSaveInstanceState(Bundle savedInstance)
     {
         savedInstance.putString(AddTransactionType, transactionType);
+        savedInstance.putString(BarcodeValue, barcodeValue);
         savedInstance.putInt(SelectedType, selectedType);
         savedInstance.putInt(SelectedCategory, selectedCategory);
 
@@ -157,6 +162,7 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
         if (item.getItemId() == R.id.btnAdd)
         {
             String title = edTitle.getText().toString();
+            String category = spnrCategory.getSelectedItem().toString();
             String amount = edAmount.getText().toString();
 
             if (title.isEmpty())
@@ -174,8 +180,14 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
             int month = datePicker.getMonth();
             int year = datePicker.getYear();
 
-            transactionViewModel.insert(new TransactionEntity(new Transaction(transactionType, spnrCategory.getSelectedItem().toString(),
+            transactionViewModel.insert(new TransactionEntity(new Transaction(transactionType, category,
                     title, DateConverter.fromTimestamp(DateConverter.convert(year, month, day)), Integer.parseInt(amount))));
+
+            if (barcodeValue != null && !barcodeValue.isEmpty())
+            {
+                transactionViewModel.insert(new BarcodeEntity(barcodeValue, new Transaction(transactionType, category,
+                        title, DateConverter.fromTimestamp(DateConverter.convert(year, month, day)), Integer.parseInt(amount))));
+            }
 
             dismiss();
         }

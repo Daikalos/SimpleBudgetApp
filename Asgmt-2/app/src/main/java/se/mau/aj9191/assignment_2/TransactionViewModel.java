@@ -44,6 +44,11 @@ public class TransactionViewModel extends AndroidViewModel
         return repository.getPeriod();
     }
 
+    public void insert(BarcodeEntity barcode)
+    {
+        repository.insert(barcode);
+    }
+
     public void findBarcode(@NonNull String barcode)
     {
         repository.findBarcode(barcode);

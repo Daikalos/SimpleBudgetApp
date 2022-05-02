@@ -64,6 +64,7 @@ public class BarcodeScanDialog extends DialogFragment
                     Barcode.FORMAT_CODE_93).build();
 
     private boolean isProcessing = true;
+    private String barcodeValue = "";
 
     public static void display(FragmentManager fragmentManager)
     {
@@ -135,13 +136,7 @@ public class BarcodeScanDialog extends DialogFragment
     }
     private void addObservers()
     {
-        transactionViewModel.getBarcode().observe(getViewLifecycleOwner(), barcodeEntity ->
-        {
-            if (barcodeEntity == null)
-                setBarcodeItem();
-            else
-                addBarcodeItem();
-        });
+        transactionViewModel.getBarcode().observe(getViewLifecycleOwner(), this::addBarcodeItem);
     }
 
     private void scanBarcode()
@@ -198,10 +193,12 @@ public class BarcodeScanDialog extends DialogFragment
                     for (Barcode barcode : barcodes)
                     {
                         String rawValue = barcode.getRawValue();
-                        if (barcode.getValueType() == Barcode.TYPE_PRODUCT)
+                        if (barcode.getValueType() == Barcode.TYPE_PRODUCT && rawValue != null)
                         {
                             isProcessing = false;
-                            transactionViewModel.findBarcode(rawValue);
+                            barcodeValue = rawValue;
+
+                            transactionViewModel.findBarcode(barcodeValue);
                         }
                     }
                 })
@@ -215,43 +212,34 @@ public class BarcodeScanDialog extends DialogFragment
         }
     }
 
-    private void setBarcodeItem()
+    private void addBarcodeItem(BarcodeEntity barcodeEntity)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.CustomDialog);
 
         builder.setTitle(R.string.txt_barcode_detected);
         builder.setCancelable(false);
 
+        if (barcodeEntity != null)
+        {
+            builder.setPositiveButton(R.string.txt_add, (dialogInterface, i) ->
+            {
+                Transaction transaction = barcodeEntity.getTransaction();
+
+                transactionViewModel.insert(new TransactionEntity(new Transaction(
+                        transaction.getType(),
+                        transaction.getCategory(),
+                        transaction.getTitle(),
+                        transaction.getDate(),
+                        transaction.getAmount())));
+
+                dialogInterface.dismiss();
+                dismiss();
+            });
+        }
+
         builder.setNegativeButton(R.string.txt_set, (dialogInterface, i) ->
         {
-
-            dialogInterface.dismiss();
-            isProcessing = true;
-        });
-        builder.setNeutralButton(R.string.txt_cancel, (dialogInterface, i) ->
-        {
-            dialogInterface.dismiss();
-            isProcessing = true;
-        });
-
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-    private void addBarcodeItem()
-    {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.CustomDialog);
-
-        builder.setTitle(R.string.txt_barcode_detected);
-        builder.setCancelable(false);
-
-        builder.setPositiveButton(R.string.txt_add, (dialogInterface, i) ->
-        {
-
-            dialogInterface.dismiss();
-            isProcessing = true;
-        });
-        builder.setNegativeButton(R.string.txt_set, (dialogInterface, i) ->
-        {
+            TransactionAddDialog.display(TransactionType.Expenses, barcodeValue, getChildFragmentManager());
 
             dialogInterface.dismiss();
             isProcessing = true;
