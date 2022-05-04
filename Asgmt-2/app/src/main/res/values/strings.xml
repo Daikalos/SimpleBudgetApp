@@ -41,4 +41,5 @@
     <string name="txt_barcode_detected">Barcode detected</string>
     <string name="txt_add">Add</string>
     <string name="txt_set">Set</string>
+    <string name="txt_add_barcode">Add Barcode</string>
 </resources>

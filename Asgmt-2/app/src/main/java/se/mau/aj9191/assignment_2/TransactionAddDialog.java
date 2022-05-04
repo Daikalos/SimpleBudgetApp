@@ -16,9 +16,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMenuItemClickListener
 {
@@ -108,11 +113,13 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
 
         initializeComponents(view);
         registerListeners();
+        addObservers();
 
         if (savedInstance != null)
-        {
             spnrCategory.setSelection(selectedCategory);
-        }
+
+        if (barcodeValue != null && !barcodeValue.isEmpty())
+            transactionViewModel.findBarcode(barcodeValue);
     }
 
     private void initializeComponents(View view)
@@ -123,7 +130,11 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
         spnrCategory = view.findViewById(R.id.spnrCategory);
         datePicker = view.findViewById(R.id.dpAdd);
 
-        toolbar.setTitle("Add " + transactionType);
+        if (barcodeValue == null || barcodeValue.isEmpty())
+            toolbar.setTitle("Add " + transactionType);
+        else
+            toolbar.setTitle(R.string.txt_add_barcode);
+
         spnrCategory.setAdapter(new ArrayAdapter<>(requireContext(),
                 R.layout.custom_spinner_item, TransactionCategories.getCategories(transactionType)));
     }
@@ -156,6 +167,33 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
             public void onNothingSelected(AdapterView<?> adapterView) { }
         });
     }
+    private void addObservers()
+    {
+        transactionViewModel.getBarcode().observe(getViewLifecycleOwner(), barcodeEntity ->
+        {
+            if (barcodeEntity == null)
+                return;
+
+            Transaction transaction = barcodeEntity.getTransaction();
+
+            List<String> categories = new ArrayList<>(Arrays.asList(TransactionCategories.getCategories(transactionType)));
+            int categoryIndex = categories.indexOf(transaction.getCategory());
+
+            Date date = transaction.getDate();
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            int month = calendar.get(Calendar.MONTH);
+            int year = calendar.get(Calendar.YEAR);
+
+            edTitle.setText(transaction.getTitle());
+            spnrCategory.setSelection(categoryIndex);
+            edAmount.setText(transaction.getAmount());
+            datePicker.updateDate(year, month, day);
+        });
+    }
 
     @Override
     public boolean onMenuItemClick(MenuItem item)
@@ -181,7 +219,7 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
             int month = datePicker.getMonth();
             int year = datePicker.getYear();
 
-            if (barcodeValue != null && !barcodeValue.isEmpty())
+            if (barcodeValue == null || barcodeValue.isEmpty())
             {
                 transactionViewModel.insert(new BarcodeEntity(barcodeValue, new Transaction(transactionType, category,
                         title, DateConverter.fromTimestamp(DateConverter.convert(year, month, day)), Integer.parseInt(amount))));
