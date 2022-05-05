@@ -1,6 +1,7 @@
 package se.mau.aj9191.assignment_2;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -35,10 +36,10 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
     private static final String SelectedCategory = "SelectedCategory";
 
     private TransactionViewModel transactionViewModel;
+    private DialogDismissListener dismissListener;
 
     private String transactionType = "";
     private String barcodeValue = "";
-    private int selectedType = 0;
     private int selectedCategory = 0;
 
     private Toolbar toolbar;
@@ -54,6 +55,10 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
         this.barcodeValue = barcodeValue;
     }
 
+    public static TransactionAddDialog display(String type, FragmentManager fragmentManager)
+    {
+        return display(type, "", fragmentManager);
+    }
     public static TransactionAddDialog display(String type, String barcodeValue, FragmentManager fragmentManager)
     {
         TransactionAddDialog createTransactionDialog = new TransactionAddDialog(type, barcodeValue);
@@ -73,7 +78,6 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
         {
             transactionType = savedInstance.getString(AddTransactionType);
             barcodeValue = savedInstance.getString(BarcodeValue);
-            selectedType = savedInstance.getInt(SelectedType);
             selectedCategory = savedInstance.getInt(SelectedCategory);
         }
     }
@@ -100,7 +104,6 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
     {
         savedInstance.putString(AddTransactionType, transactionType);
         savedInstance.putString(BarcodeValue, barcodeValue);
-        savedInstance.putInt(SelectedType, selectedType);
         savedInstance.putInt(SelectedCategory, selectedCategory);
 
         super.onSaveInstanceState(savedInstance);
@@ -113,13 +116,9 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
 
         initializeComponents(view);
         registerListeners();
-        addObservers();
 
         if (savedInstance != null)
             spnrCategory.setSelection(selectedCategory);
-
-        if (barcodeValue != null && !barcodeValue.isEmpty())
-            transactionViewModel.findBarcode(barcodeValue);
     }
 
     private void initializeComponents(View view)
@@ -148,50 +147,11 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
             {
-                selectedType = i;
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) { }
-        });
-
-        spnrCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
-            {
                 selectedCategory = i;
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) { }
-        });
-    }
-    private void addObservers()
-    {
-        transactionViewModel.getBarcode().observe(getViewLifecycleOwner(), barcodeEntity ->
-        {
-            if (barcodeEntity == null)
-                return;
-
-            Transaction transaction = barcodeEntity.getTransaction();
-
-            List<String> categories = new ArrayList<>(Arrays.asList(TransactionCategories.getCategories(transactionType)));
-            int categoryIndex = categories.indexOf(transaction.getCategory());
-
-            Date date = transaction.getDate();
-
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
-            int month = calendar.get(Calendar.MONTH);
-            int year = calendar.get(Calendar.YEAR);
-
-            edTitle.setText(transaction.getTitle());
-            spnrCategory.setSelection(categoryIndex);
-            edAmount.setText(transaction.getAmount());
-            datePicker.updateDate(year, month, day);
         });
     }
 
@@ -221,17 +181,31 @@ public class TransactionAddDialog extends DialogFragment implements Toolbar.OnMe
 
             if (barcodeValue == null || barcodeValue.isEmpty())
             {
-                transactionViewModel.insert(new BarcodeEntity(barcodeValue, new Transaction(transactionType, category,
+                transactionViewModel.insert(new TransactionEntity(new Transaction(transactionType, category,
                         title, DateConverter.fromTimestamp(DateConverter.convert(year, month, day)), Integer.parseInt(amount))));
             }
             else
             {
-                transactionViewModel.insert(new TransactionEntity(new Transaction(transactionType, category,
+                transactionViewModel.insert(new BarcodeEntity(barcodeValue, new Transaction(transactionType, category,
                         title, DateConverter.fromTimestamp(DateConverter.convert(year, month, day)), Integer.parseInt(amount))));
             }
 
             dismiss();
         }
         return true;
+    }
+
+    public void setOnDismissListener(DialogDismissListener dismissListener)
+    {
+        this.dismissListener = dismissListener;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog)
+    {
+        super.onDismiss(dialog);
+
+        if (dismissListener != null)
+            dismissListener.dialogDismiss(dialog);
     }
 }

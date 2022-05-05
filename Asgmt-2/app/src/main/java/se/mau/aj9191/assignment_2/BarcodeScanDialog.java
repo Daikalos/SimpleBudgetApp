@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -92,7 +93,8 @@ public class BarcodeScanDialog extends DialogFragment
                 }
                 else
                     scanBarcode();
-            }).launch(Manifest.permission.CAMERA);
+            })
+            .launch(Manifest.permission.CAMERA);
         }
         else
             scanBarcode();
@@ -137,6 +139,57 @@ public class BarcodeScanDialog extends DialogFragment
     private void addObservers()
     {
         transactionViewModel.getBarcode().observe(getViewLifecycleOwner(), this::addBarcodeItem);
+    }
+
+    private void addBarcodeItem(BarcodeEntity barcodeEntity)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.CustomDialog);
+
+        builder.setTitle(R.string.txt_barcode_detected);
+        builder.setMessage(barcodeValue);
+
+        builder.setCancelable(false);
+
+        if (barcodeEntity != null)
+        {
+            builder.setPositiveButton(R.string.txt_add, (dialogInterface, i) ->
+            {
+                Transaction transaction = barcodeEntity.getTransaction();
+
+                transactionViewModel.insert(new TransactionEntity(new Transaction(
+                        transaction.getType(),
+                        transaction.getCategory(),
+                        transaction.getTitle(),
+                        transaction.getDate(),
+                        transaction.getAmount())));
+
+                ShowToast.show(requireContext(), "item was successfully added");
+
+                dialogInterface.dismiss();
+                dismiss();
+            });
+        }
+
+        builder.setNegativeButton(R.string.txt_set, (dialogInterface, i) ->
+        {
+            TransactionAddDialog.display(TransactionType.Expenses, barcodeValue, getChildFragmentManager())
+                    .setOnDismissListener(dialog ->
+                    {
+                        isProcessing = true;
+                        ShowToast.show(requireContext(), "item was successfully set");
+                    });
+
+            dialogInterface.dismiss();
+        });
+
+        builder.setNeutralButton(R.string.txt_cancel, (dialogInterface, i) ->
+        {
+            dialogInterface.dismiss();
+            isProcessing = true;
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     private void scanBarcode()
@@ -187,7 +240,7 @@ public class BarcodeScanDialog extends DialogFragment
             {
                 InputImage image = InputImage.fromMediaImage(mediaImage, imageProxy.getImageInfo().getRotationDegrees());
 
-                Task<List<Barcode>> result = barcodeScanner.process(image)
+                barcodeScanner.process(image)
                 .addOnSuccessListener(barcodes ->
                 {
                     for (Barcode barcode : barcodes)
@@ -210,49 +263,5 @@ public class BarcodeScanDialog extends DialogFragment
                 .addOnCompleteListener(task -> imageProxy.close());
             }
         }
-    }
-
-    private void addBarcodeItem(BarcodeEntity barcodeEntity)
-    {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.CustomDialog);
-
-        builder.setTitle(R.string.txt_barcode_detected);
-        builder.setMessage(barcodeValue);
-
-        builder.setCancelable(false);
-
-        if (barcodeEntity != null)
-        {
-            builder.setPositiveButton(R.string.txt_add, (dialogInterface, i) ->
-            {
-                Transaction transaction = barcodeEntity.getTransaction();
-
-                transactionViewModel.insert(new TransactionEntity(new Transaction(
-                        transaction.getType(),
-                        transaction.getCategory(),
-                        transaction.getTitle(),
-                        transaction.getDate(),
-                        transaction.getAmount())));
-
-                dialogInterface.dismiss();
-                dismiss();
-            });
-        }
-
-        builder.setNegativeButton(R.string.txt_set, (dialogInterface, i) ->
-        {
-            TransactionAddDialog.display(TransactionType.Expenses, barcodeValue, getChildFragmentManager());
-
-            dialogInterface.dismiss();
-            isProcessing = true;
-        });
-        builder.setNeutralButton(R.string.txt_cancel, (dialogInterface, i) ->
-        {
-            dialogInterface.dismiss();
-            isProcessing = true;
-        });
-
-        AlertDialog alert = builder.create();
-        alert.show();
     }
 }

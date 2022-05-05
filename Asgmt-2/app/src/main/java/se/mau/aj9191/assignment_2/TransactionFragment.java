@@ -133,7 +133,7 @@ public class TransactionFragment extends Fragment implements Toolbar.OnMenuItemC
         toolbar.setOnMenuItemClickListener(this);
         btnAction.setOnClickListener(view ->
         {
-            TransactionAddDialog.display(transactionType, null, getChildFragmentManager());
+            TransactionAddDialog.display(transactionType, getChildFragmentManager());
             rvTransactions.smoothScrollToPosition(rvTransactions.getTop());
         });
     }
